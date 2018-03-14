@@ -1,7 +1,7 @@
 {
-  "name": "quantified-self-starter-kit",
+  "name": "quantified-self",
   "version": "1.0.0",
-  "description": "Starter kit for Turing School's BEE M4 Quantified Self Project",
+  "description": "Quantified Self Project, Turing School, Mod 4",
   "main": "index.js",
   "scripts": {
     "start": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js",
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/turingschool-examples/game-time-starter-kit-FEm1.git"
+    "url": "git+https://github.com/leepuppychow/quantified-self"
   },
-  "author": "Turing School of Software and Design - Nate Allen",
+  "author": "Lee Chow, Josi McClellan",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/turingschool-examples/quantified-self-starter-kit/issues"
+    "url": "https://github.com/leepuppychow/quantified-self/issues"
   },
-  "homepage": "https://github.com/turingschool-examples/quantified-self-starter-kit#readme",
+  "homepage": "https://leepuppychow.github.io/quantified-self",
   "devDependencies": {
     "babel": "^6.5.2",
     "babel-core": "^6.18.2",
@@ -27,8 +27,10 @@
     "chromedriver": "^2.27.2",
     "css-loader": "^0.26.0",
     "jquery": "^3.1.1",
+    "lodash": "^4.17.5",
     "mocha": "^3.1.2",
     "mocha-loader": "^1.0.0",
+    "moment": "^2.21.0",
     "node-libs-browser": "^1.0.0",
     "node-sass": "^4.3.0",
     "sass-loader": "^4.1.1",
@@ -37,5 +39,7 @@
     "webdriverjs": "^1.7.5",
     "webpack": "^1.14.0",
     "webpack-dev-server": "^1.16.2"
+  },
+  "dependencies": {
   }
 }
