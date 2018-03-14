@@ -2,6 +2,8 @@
 
 To get you started building your Quantified Self app.
 
+[![Build Status](https://travis-ci.org/leepuppychow/quantified-self.svg?branch=master)](https://travis-ci.org/leepuppychow/quantified-self)
+
 ## Initial Setup
 
 One person from your project will set up the repository. That one person should follow these steps:
