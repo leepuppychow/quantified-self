@@ -1,0 +1,10 @@
+notifications:
+  email: false
+
+language: node_js
+node_js:
+  - lts/*
+  - node
+
+before_script:
+  - npm run build 
