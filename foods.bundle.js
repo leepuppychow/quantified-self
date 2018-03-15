@@ -91,8 +91,8 @@
 	    _classCallCheck(this, FoodsHandler);
 
 	    this.service = new _foodsService2.default();
-	    this.$tbody = (0, _jquery2.default)('table.foods tbody');
-	    _lodash2.default.bindAll(this, 'handleSubmit', 'handleDelete', 'addFood');
+	    this.$ = this.grabElements();
+	    _lodash2.default.bindAll(this, 'handleSubmit', 'handleDelete', 'handlePrepend', 'handleStartEdit');
 	  }
 
 	  _createClass(FoodsHandler, [{
@@ -100,23 +100,23 @@
 	    value: function populate() {
 	      var _this = this;
 
-	      this.service.getIndex().then(this.sortByIdDescending).then(function (foods) {
-	        return foods.forEach(_this.addFood);
+	      this.service.index().then(this.sortByIdDescending).then(function (foods) {
+	        return foods.forEach(_this.handlePrepend);
 	      });
 	    }
 	  }, {
 	    key: 'listen',
 	    value: function listen() {
-	      (0, _jquery2.default)('form.add-food').on('submit', this.handleSubmit);
-	      this.$tbody.on('click', '.delete', this.handleDelete);
+	      this.$.body.on('click', '.data', this.handleStartEdit);
+	      this.$.data.on('click', '.delete', this.handleDelete);
+	      this.$.form.submit(this.handleSubmit);
 	    }
 	  }, {
 	    key: 'handleDelete',
 	    value: function handleDelete(event) {
-	      var $td = (0, _jquery2.default)(event.currentTarget);
-	      var $tr = (0, _jquery2.default)($td).closest('tr');
+	      var $tr = (0, _jquery2.default)(event.currentTarget).closest('tr');
 	      $tr.hide();
-	      this.service.delete($td.data('id')).then(function () {
+	      this.service.destroy($tr.data('id')).then(function () {
 	        return $tr.remove();
 	      }).catch(function () {
 	        return $tr.show();
@@ -126,29 +126,76 @@
 	    key: 'handleSubmit',
 	    value: function handleSubmit(event) {
 	      event.preventDefault();
+	      var _$ = this.$,
+	          errors = _$.errors,
+	          inputs = _$.inputs;
+
 	      var food = {
-	        name: (0, _jquery2.default)('input[name="name"]').val(),
-	        calories: (0, _jquery2.default)('input[name="calories"]').val()
+	        name: inputs.name.val(),
+	        calories: inputs.calories.val()
 	      };
-	      var $errors = (0, _jquery2.default)('.errors');
 	      var errorText = '';
 	      if (!food.name) errorText += '<p>Please enter a food name</p>';
 	      if (!food.calories) errorText += '<p>Please enter a calorie amount</p>';
-	      $errors.html(errorText);
+	      errors.html(errorText);
 	      if (!errorText.length) {
-	        this.service.create(food).then(this.addFood);
-	        (0, _jquery2.default)('input[name="name"]').val('');
-	        (0, _jquery2.default)('input[name="calories"]').val('');
+	        this.service.create(food).then(this.handlePrepend);
+	        inputs.name.val('');
+	        inputs.calories.val('');
 	      }
 	    }
 	  }, {
-	    key: 'addFood',
-	    value: function addFood(_ref) {
-	      var id = _ref.id,
-	          name = _ref.name,
-	          calories = _ref.calories;
+	    key: 'handleStartEdit',
+	    value: function handleStartEdit(event) {
+	      var $td = (0, _jquery2.default)(event.target);
+	      var field = $td.data('field');
+	      var $input = this.$.inputs[field].clone();
+	      $input.val($td.text());
+	      $td.replaceWith($input);
+	      $input.focus();
+	      this.waitToStopEditing({ $td: $td, $input: $input, field: field });
+	    }
+	  }, {
+	    key: 'waitToStopEditing',
+	    value: function (_waitToStopEditing) {
+	      function waitToStopEditing(_x) {
+	        return _waitToStopEditing.apply(this, arguments);
+	      }
 
-	      this.$tbody.prepend('\n      <tr>\n        <td>' + name + '</td>\n        <td>' + calories + '</td>\n        <td>\n          <button class="delete" data-id="' + id + '">Delete</button>\n        </td>\n      </tr>\n    ');
+	      waitToStopEditing.toString = function () {
+	        return _waitToStopEditing.toString();
+	      };
+
+	      return waitToStopEditing;
+	    }(function (_ref) {
+	      var _this2 = this;
+
+	      var $td = _ref.$td,
+	          $input = _ref.$input,
+	          field = _ref.field;
+
+	      this.$.body.one('click', function (event) {
+	        if ((0, _jquery2.default)(event.target) === $input) return waitToStopEditing({ $td: $td, $input: $input, field: field });
+	        var newValue = $input.val();
+	        var oldValue = $td.text();
+	        $td.text(newValue);
+	        $input.replaceWith($td);
+	        if (newValue !== oldValue) {
+	          var id = $td.closest('tr').data('id');
+	          _this2.service.update(id, field, newValue).catch(function () {
+	            return $td.text(oldValue);
+	          });
+	        }
+	      });
+	    })
+	  }, {
+	    key: 'handlePrepend',
+	    value: function handlePrepend(_ref2) {
+	      var id = _ref2.id,
+	          name = _ref2.name,
+	          calories = _ref2.calories;
+
+	      this.$.data.prepend('\n      <tr data-id="' + id + '">\n        <td class="data" data-field="name">' + name + '</td>\n        <td class="data" data-field="calories">' + calories + '</td>\n        <td>\n          <button class="delete">Delete</button>\n        </td>\n      </tr>\n    ');
 	    }
 	  }, {
 	    key: 'sortByIdDescending',
@@ -156,6 +203,20 @@
 	      return list.sort(function (a, b) {
 	        return a.id - b.id;
 	      });
+	    }
+	  }, {
+	    key: 'grabElements',
+	    value: function grabElements() {
+	      return {
+	        body: (0, _jquery2.default)(document.body),
+	        form: (0, _jquery2.default)('form.add-food'),
+	        data: (0, _jquery2.default)('table.foods tbody'),
+	        errors: (0, _jquery2.default)('.errors'),
+	        inputs: {
+	          name: (0, _jquery2.default)('form input[name="name"]'),
+	          calories: (0, _jquery2.default)('form input[name="calories"]')
+	        }
+	      };
 	    }
 	  }]);
 
@@ -27672,6 +27733,8 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -27688,9 +27751,14 @@
 	  }
 
 	  _createClass(FoodsService, [{
-	    key: 'getIndex',
-	    value: function getIndex() {
+	    key: 'index',
+	    value: function index() {
 	      return this.fetch('foods');
+	    }
+	  }, {
+	    key: 'show',
+	    value: function show() {
+	      return this.fetch('foods/' + id);
 	    }
 	  }, {
 	    key: 'create',
@@ -27698,8 +27766,13 @@
 	      return this.send('POST', 'foods', { food: food });
 	    }
 	  }, {
-	    key: 'delete',
-	    value: function _delete(id) {
+	    key: 'update',
+	    value: function update(id, field, value) {
+	      return this.send('PATCH', 'foods/' + id, _defineProperty({}, field, value));
+	    }
+	  }, {
+	    key: 'destroy',
+	    value: function destroy(id) {
 	      return this.send('DELETE', 'foods/' + id);
 	    }
 	  }]);
@@ -27723,12 +27796,33 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var ServiceError = function (_Error) {
+	  _inherits(ServiceError, _Error);
+
+	  function ServiceError() {
+	    _classCallCheck(this, ServiceError);
+
+	    return _possibleConstructorReturn(this, (ServiceError.__proto__ || Object.getPrototypeOf(ServiceError)).apply(this, arguments));
+	  }
+
+	  return ServiceError;
+	}(Error);
+
 	var Service = function () {
 	  function Service() {
 	    _classCallCheck(this, Service);
 	  }
 
 	  _createClass(Service, [{
+	    key: 'baseUrl',
+	    value: function baseUrl() {
+	      return 'https://quantified-self-rails-api.herokuapp.com/api/v1/';
+	    }
+	  }, {
 	    key: 'fetch',
 	    value: function (_fetch) {
 	      function fetch(_x, _x2) {
@@ -27741,12 +27835,12 @@
 
 	      return fetch;
 	    }(function (path, options) {
-	      return fetch('https://quantified-self-rails-api.herokuapp.com/api/v1/' + path, options).then(this.checkOK).then(this.parseIfJson);
+	      return fetch(this.baseUrl() + path, options).then(this.checkOK).then(this.parseIfJson);
 	    })
 	  }, {
 	    key: 'send',
 	    value: function send(method, path, data) {
-	      var headers = { 'Accept': 'application/json', 'Content-Type': 'application/json' };
+	      var headers = { 'Content-Type': 'application/json' };
 	      var body = JSON.stringify(data);
 	      return this.fetch(path, { body: body, headers: headers, method: method });
 	    }
@@ -27754,7 +27848,7 @@
 	    key: 'checkOK',
 	    value: function checkOK(res) {
 	      if (res.ok) return res;
-	      throw new Error(res.status + ': ' + res.statusText);
+	      throw new ServiceError(res.status + ': ' + res.statusText);
 	    }
 	  }, {
 	    key: 'parseIfJson',
@@ -27805,7 +27899,7 @@
 
 
 	// module
-	exports.push([module.id, ".errors {\n  color: red;\n  line-height: 0;\n  font-style: italic; }\n\n.breakfast, .lunch, .dinner, .snacks {\n  border: 1px solid black; }\n", ""]);
+	exports.push([module.id, ".errors {\n  color: red;\n  line-height: 0;\n  font-style: italic; }\n\n.foods, .breakfast, .lunch, .dinner, .snacks, .totals {\n  border: 1px solid black;\n  border-collapse: collapse; }\n  .foods tr, .foods th, .foods td, .breakfast tr, .breakfast th, .breakfast td, .lunch tr, .lunch th, .lunch td, .dinner tr, .dinner th, .dinner td, .snacks tr, .snacks th, .snacks td, .totals tr, .totals th, .totals td {\n    border: 1px solid black; }\n", ""]);
 
 	// exports
 
