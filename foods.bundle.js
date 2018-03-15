@@ -56,9 +56,29 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	new _foodsService2.default().getIndex().then(function (foods) {
-	  foods.forEach(function (food) {
-	    (0, _jquery2.default)('table.foods tbody').append('\n      <tr>\n        <td>' + food.name + '</td>\n        <td>' + food.calories + '</td>\n        <td>DELETE</td>\n      </tr>\n    ');
+	var foodsService = new _foodsService2.default();
+
+	var addFood = function addFood(food) {
+	  (0, _jquery2.default)('table.foods tbody').append('\n    <tr>\n      <td>' + food.name + '</td>\n      <td>' + food.calories + '</td>\n      <td id="' + food.id + '">DELETE</td>\n    </tr>\n  ');
+	};
+
+	foodsService.getIndex().then(function (foods) {
+	  return foods.forEach(addFood);
+	});
+
+	(0, _jquery2.default)('form.add-food').on('submit', function (event) {
+	  event.preventDefault();
+	  var name = (0, _jquery2.default)('input[name="name"]').val();
+	  var calories = (0, _jquery2.default)('input[name="calories"]').val();
+	  foodsService.create({ name: name, calories: calories }).then(function (food) {
+	    return food.json();
+	  }).then(addFood).catch(console.log);
+	});
+
+	(0, _jquery2.default)('.food-table-body').on('click', function (event) {
+	  var id = (0, _jquery2.default)(event.target).attr("id");
+	  foodsService.delete(id).then(function () {
+	    return window.location.reload();
 	  });
 	});
 
@@ -10454,7 +10474,7 @@
 	  _createClass(FoodsService, [{
 	    key: 'fetch',
 	    value: function (_fetch) {
-	      function fetch(_x) {
+	      function fetch(_x, _x2) {
 	        return _fetch.apply(this, arguments);
 	      }
 
@@ -10463,8 +10483,8 @@
 	      };
 
 	      return fetch;
-	    }(function (path) {
-	      return fetch('https://quantified-self-rails-api.herokuapp.com/api/v1/' + path);
+	    }(function (path, options) {
+	      return fetch('https://quantified-self-rails-api.herokuapp.com/api/v1/' + path, options);
 	    })
 	  }, {
 	    key: 'getIndex',
@@ -10472,6 +10492,18 @@
 	      return this.fetch('foods').then(function (response) {
 	        return response.json();
 	      }).catch(console.log);
+	    }
+	  }, {
+	    key: 'create',
+	    value: function create(food) {
+	      var body = JSON.stringify({ food: food });
+	      var headers = { 'Accept': 'application/json', 'Content-Type': 'application/json' };
+	      return this.fetch('foods', { body: body, headers: headers, method: 'POST' });
+	    }
+	  }, {
+	    key: 'delete',
+	    value: function _delete(id) {
+	      return this.fetch('foods/' + id, { method: 'DELETE' }).catch(console.log);
 	    }
 	  }]);
 
