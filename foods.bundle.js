@@ -59,7 +59,7 @@
 	var foodsService = new _foodsService2.default();
 
 	var addFood = function addFood(food) {
-	  (0, _jquery2.default)('table.foods tbody').append('\n    <tr>\n      <td>' + food.name + '</td>\n      <td>' + food.calories + '</td>\n      <td id="' + food.id + '">DELETE</td>\n    </tr>\n  ');
+	  (0, _jquery2.default)('table.foods tbody').prepend('\n    <tr>\n      <td>' + food.name + '</td>\n      <td>' + food.calories + '</td>\n      <td id="' + food.id + '">DELETE</td>\n    </tr>\n  ');
 	};
 
 	foodsService.getIndex().then(function (foods) {
@@ -79,7 +79,7 @@
 	  var id = (0, _jquery2.default)(event.target).attr("id");
 	  foodsService.delete(id).then(function () {
 	    return window.location.reload();
-	  });
+	  }); // Maybe have a separate load foods function
 	});
 
 /***/ }),
@@ -10489,8 +10489,12 @@
 	  }, {
 	    key: 'getIndex',
 	    value: function getIndex() {
+	      var _this = this;
+
 	      return this.fetch('foods').then(function (response) {
 	        return response.json();
+	      }).then(function (foods) {
+	        return _this.sortFoodsByIdDescending(foods);
 	      }).catch(console.log);
 	    }
 	  }, {
@@ -10504,6 +10508,13 @@
 	    key: 'delete',
 	    value: function _delete(id) {
 	      return this.fetch('foods/' + id, { method: 'DELETE' }).catch(console.log);
+	    }
+	  }, {
+	    key: 'sortFoodsByIdDescending',
+	    value: function sortFoodsByIdDescending(foods) {
+	      return foods.sort(function (foodA, foodB) {
+	        return foodA.id - foodB.id;
+	      });
 	    }
 	  }]);
 
