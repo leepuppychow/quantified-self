@@ -50,13 +50,17 @@
 
 	var _jquery2 = _interopRequireDefault(_jquery);
 
-	var _foo = __webpack_require__(2);
+	var _foodsService = __webpack_require__(2);
 
-	var _foo2 = _interopRequireDefault(_foo);
+	var _foodsService2 = _interopRequireDefault(_foodsService);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	(0, _jquery2.default)('#greeting').text(new _foo2.default().greet());
+	new _foodsService2.default().getIndex().then(function (foods) {
+	  foods.forEach(function (food) {
+	    (0, _jquery2.default)('table.foods tbody').append('\n      <tr>\n        <td>' + food.name + '</td>\n        <td>' + food.calories + '</td>\n        <td>DELETE</td>\n      </tr>\n    ');
+	  });
+	});
 
 /***/ }),
 /* 1 */
@@ -10432,7 +10436,7 @@
 /* 2 */
 /***/ (function(module, exports) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -10442,22 +10446,39 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var Foo = function () {
-	  function Foo() {
-	    _classCallCheck(this, Foo);
+	var FoodsService = function () {
+	  function FoodsService() {
+	    _classCallCheck(this, FoodsService);
 	  }
 
-	  _createClass(Foo, [{
-	    key: "greet",
-	    value: function greet() {
-	      return "Hello, world!";
+	  _createClass(FoodsService, [{
+	    key: 'fetch',
+	    value: function (_fetch) {
+	      function fetch(_x) {
+	        return _fetch.apply(this, arguments);
+	      }
+
+	      fetch.toString = function () {
+	        return _fetch.toString();
+	      };
+
+	      return fetch;
+	    }(function (path) {
+	      return fetch('https://quantified-self-rails-api.herokuapp.com/api/v1/' + path);
+	    })
+	  }, {
+	    key: 'getIndex',
+	    value: function getIndex() {
+	      return this.fetch('foods').then(function (response) {
+	        return response.json();
+	      }).catch(console.log);
 	    }
 	  }]);
 
-	  return Foo;
+	  return FoodsService;
 	}();
 
-	exports.default = Foo;
+	exports.default = FoodsService;
 
 /***/ })
 /******/ ]);
