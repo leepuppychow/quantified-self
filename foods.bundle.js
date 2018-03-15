@@ -27805,7 +27805,7 @@
 
 
 	// module
-	exports.push([module.id, ".errors {\n  color: red;\n  line-height: 0;\n  font-style: italic; }\n", ""]);
+	exports.push([module.id, ".errors {\n  color: red;\n  line-height: 0;\n  font-style: italic; }\n\n.breakfast, .lunch, .dinner, .snacks {\n  border: 1px solid black; }\n", ""]);
 
 	// exports
 
