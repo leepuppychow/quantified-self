@@ -10,9 +10,10 @@
       <input name="name">
     </label>
     <label>Calories:
-      <input name="calories">
+      <input name="calories" type="number" min="0">
     </label>
     <button type="submit">Add Food</button>
+    <div class="error"></div>
   </form>
   <table class="foods">
     <thead>
@@ -22,9 +23,7 @@
         <th></th>
       </tr>
     </thead>
-    <tbody class="food-table-body">
-      <!-- foods go here -->
-    </tbody>
+    <tbody />
   </table>
   <script src="foods.bundle.js"></script>
 </body>
