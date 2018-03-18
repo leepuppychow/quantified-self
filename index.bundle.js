@@ -28015,6 +28015,18 @@
 	    this.service = new _mealsService2.default();
 	    this.$ = this.grabElements();
 	    _lodash2.default.bindAll(this, 'populateMeal');
+	    this.totals = {
+	      Breakfast: 0,
+	      Lunch: 0,
+	      Dinner: 0,
+	      Snack: 0
+	    };
+	    this.goalCaloriesPerMeal = {
+	      Breakfast: 400,
+	      Snack: 200,
+	      Lunch: 600,
+	      Dinner: 800
+	    };
 	  }
 
 	  _createClass(MealsHandler, [{
@@ -28024,6 +28036,8 @@
 
 	      this.service.index().then(function (meals) {
 	        return meals.forEach(_this.populateMeal);
+	      }).then(function () {
+	        return _this.fillTotalCaloriesTable();
 	      });
 	    }
 	  }, {
@@ -28032,17 +28046,19 @@
 	  }, {
 	    key: 'populateMeal',
 	    value: function populateMeal(_ref) {
+	      var _this2 = this;
+
 	      var id = _ref.id,
 	          name = _ref.name,
 	          foods = _ref.foods;
 
 	      var totalCalories = 0;
 	      foods.forEach(function (food) {
-	        totalCalories += food.calories;
+	        _this2.totals[name] += food.calories;
 	        (0, _jquery2.default)('.' + name.toLowerCase() + ' tbody').prepend('\n        <tr>\n          <th>' + food.name + '</th>\n          <th>' + food.calories + '</th>\n        </tr>\n        ');
 	      });
-	      this.showTotalCalories(name, totalCalories);
-	      this.showRemainingCalories(name, totalCalories);
+	      this.showTotalCalories(name, this.totals[name]);
+	      this.showRemainingCalories(name, this.totals[name]);
 	    }
 	  }, {
 	    key: 'showTotalCalories',
@@ -28052,24 +28068,40 @@
 	  }, {
 	    key: 'showRemainingCalories',
 	    value: function showRemainingCalories(meal, totalCalories) {
-	      var goalCaloriesPerMeal = {
-	        Breakfast: 400,
-	        Snack: 200,
-	        Lunch: 600,
-	        Dinner: 800
-	      };
-	      var remainingCalories = goalCaloriesPerMeal[meal] - totalCalories;
-	      (0, _jquery2.default)('#' + meal.toLowerCase() + '-remaining-calories').html(remainingCalories);
-	      this.checkRemainingCalories(meal, remainingCalories);
+	      var remainingCalories = this.goalCaloriesPerMeal[meal] - totalCalories;
+	      var mealRemainingCals = (0, _jquery2.default)('#' + meal.toLowerCase() + '-remaining-calories');
+	      mealRemainingCals.html(remainingCalories);
+	      this.addRemainingCalsStyle(remainingCalories, mealRemainingCals);
 	    }
 	  }, {
-	    key: 'checkRemainingCalories',
-	    value: function checkRemainingCalories(meal, calories) {
-	      if (calories <= 0) {
-	        (0, _jquery2.default)('#' + meal.toLowerCase() + '-remaining-calories').addClass("negative-calories");
-	      } else {
-	        (0, _jquery2.default)('#' + meal.toLowerCase() + '-remaining-calories').addClass("positive-calories");
-	      }
+	    key: 'fillTotalCaloriesTable',
+	    value: function fillTotalCaloriesTable() {
+	      var totalGoal = this.getTotalGoalCalories();
+	      var totalConsumed = this.getTotalConsumed();
+	      var totalRemaining = totalGoal - totalConsumed;
+	      (0, _jquery2.default)("#total-calories-goal").html(totalGoal);
+	      (0, _jquery2.default)("#total-calories-consumed").html(totalConsumed);
+	      (0, _jquery2.default)("#total-calories-remaining").html(totalRemaining);
+	      this.addRemainingCalsStyle(totalRemaining, (0, _jquery2.default)("#total-calories-remaining"));
+	    }
+	  }, {
+	    key: 'getTotalGoalCalories',
+	    value: function getTotalGoalCalories() {
+	      return Object.values(this.goalCaloriesPerMeal).reduce(function (sum, meal) {
+	        return sum += meal;
+	      });
+	    }
+	  }, {
+	    key: 'getTotalConsumed',
+	    value: function getTotalConsumed() {
+	      return Object.values(this.totals).reduce(function (sum, meal) {
+	        return sum += meal;
+	      });
+	    }
+	  }, {
+	    key: 'addRemainingCalsStyle',
+	    value: function addRemainingCalsStyle(calories, element) {
+	      calories <= 0 ? element.addClass('negative-calories') : element.addClass('positive-calories');
 	    }
 	  }, {
 	    key: 'grabElements',
