@@ -162,9 +162,9 @@
 	  }, {
 	    key: 'handleFilter',
 	    value: function handleFilter(event) {
-	      var term = this.$.inputs.filter.val();
+	      var term = this.$.inputs.filter.val().toLowerCase();
 	      (0, _jquery2.default)('td.name').each(function (_, td) {
-	        (0, _jquery2.default)(td).closest('tr').toggle(td.innerHTML.startsWith(term));
+	        (0, _jquery2.default)(td).closest('tr').toggle(td.innerHTML.toLowerCase().startsWith(term));
 	      });
 	    }
 	  }, {
