@@ -179,7 +179,7 @@
 	      var target = _ref2.target;
 
 	      var $target = (0, _jquery2.default)(target);
-	      if (this.editing && $target !== this.editing.$input) this.submitEdit();
+	      if (this.editing && !$target.hasClass('editor')) this.submitEdit();
 	      if ($target.hasClass('data')) this.startEdit($target);
 	    }
 	  }, {
