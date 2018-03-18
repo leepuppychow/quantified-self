@@ -27667,7 +27667,7 @@
 
 
 	// module
-	exports.push([module.id, ".errors {\n  color: red;\n  line-height: 0;\n  font-style: italic; }\n\n.foods, .breakfast, .lunch, .dinner, .snack, .totals {\n  border: 1px solid black;\n  border-collapse: collapse; }\n  .foods tr, .foods th, .foods td, .breakfast tr, .breakfast th, .breakfast td, .lunch tr, .lunch th, .lunch td, .dinner tr, .dinner th, .dinner td, .snack tr, .snack th, .snack td, .totals tr, .totals th, .totals td {\n    border: 1px solid black; }\n", ""]);
+	exports.push([module.id, ".errors {\n  color: red;\n  line-height: 0;\n  font-style: italic; }\n\n.foods, .breakfast, .lunch, .dinner, .snack, .totals {\n  border: 1px solid black;\n  border-collapse: collapse; }\n  .foods tr, .foods th, .foods td, .breakfast tr, .breakfast th, .breakfast td, .lunch tr, .lunch th, .lunch td, .dinner tr, .dinner th, .dinner td, .snack tr, .snack th, .snack td, .totals tr, .totals th, .totals td {\n    border: 1px solid black; }\n\n.negative-calories {\n  color: red; }\n\n.positive-calories {\n  color: green; }\n", ""]);
 
 	// exports
 
@@ -28060,6 +28060,16 @@
 	      };
 	      var remainingCalories = goalCaloriesPerMeal[meal] - totalCalories;
 	      (0, _jquery2.default)('#' + meal.toLowerCase() + '-remaining-calories').html(remainingCalories);
+	      this.checkRemainingCalories(meal, remainingCalories);
+	    }
+	  }, {
+	    key: 'checkRemainingCalories',
+	    value: function checkRemainingCalories(meal, calories) {
+	      if (calories <= 0) {
+	        (0, _jquery2.default)('#' + meal.toLowerCase() + '-remaining-calories').addClass("negative-calories");
+	      } else {
+	        (0, _jquery2.default)('#' + meal.toLowerCase() + '-remaining-calories').addClass("positive-calories");
+	      }
 	    }
 	  }, {
 	    key: 'grabElements',
