@@ -92,7 +92,8 @@
 
 	    this.service = new _foodsService2.default();
 	    this.$ = this.grabElements();
-	    _lodash2.default.bindAll(this, 'handleSubmit', 'handleDelete', 'handlePrepend', 'handleStartEdit', 'handleFilter');
+	    this.editing = null;
+	    _lodash2.default.bindAll(this, 'prependFood', 'handleFilterKeyup', 'handleSubmitAddFood', 'handleClickDelete', 'handleClick', 'handleEditorKeydown');
 	  }
 
 	  _createClass(FoodsHandler, [{
@@ -101,27 +102,43 @@
 	      var _this = this;
 
 	      this.service.index().then(this.sortByIdDescending).then(function (foods) {
-	        return foods.forEach(_this.handlePrepend);
+	        return foods.forEach(_this.prependFood);
 	      });
 	    }
 	  }, {
 	    key: 'listen',
 	    value: function listen() {
-	      this.$.form.submit(this.handleSubmit);
-	      this.$.data.on('click', '.delete', this.handleDelete);
-	      this.$.body.on('click', '.data', this.handleStartEdit);
-	      this.$.inputs.filter.keyup(this.handleFilter);
+	      var _$ = this.$,
+	          addFood = _$.addFood,
+	          data = _$.data,
+	          body = _$.body,
+	          inputs = _$.inputs;
+
+	      inputs.filter.keyup(this.handleFilterKeyup);
+	      addFood.submit(this.handleSubmitAddFood);
+	      data.on('click', '.delete', this.handleClickDelete);
+	      body.click(this.handleClick);
+	      body.on('keydown', '.editor', this.handleEditorKeydown);
 	      (0, _jquery2.default)('form.filter').submit(function (e) {
 	        return e.preventDefault();
 	      });
 	    }
 	  }, {
-	    key: 'handleSubmit',
-	    value: function handleSubmit(event) {
+	    key: 'prependFood',
+	    value: function prependFood(_ref) {
+	      var id = _ref.id,
+	          name = _ref.name,
+	          calories = _ref.calories;
+
+	      this.$.data.prepend('\n      <tr data-id="' + id + '">\n        <td class="data name" data-field="name">' + name + '</td>\n        <td class="data" data-field="calories">' + calories + '</td>\n        <td>\n          <button class="delete">Delete</button>\n        </td>\n      </tr>\n    ');
+	    }
+	  }, {
+	    key: 'handleSubmitAddFood',
+	    value: function handleSubmitAddFood(event) {
 	      event.preventDefault();
-	      var _$ = this.$,
-	          errors = _$.errors,
-	          inputs = _$.inputs;
+	      var _$2 = this.$,
+	          errors = _$2.errors,
+	          inputs = _$2.inputs;
 
 	      var food = {
 	        name: inputs.name.val(),
@@ -132,15 +149,15 @@
 	      if (!food.calories) errorText += '<p>Please enter a calorie amount</p>';
 	      errors.html(errorText);
 	      if (!errorText.length) {
-	        this.service.create(food).then(this.handlePrepend);
+	        this.service.create(food).then(this.prependFood);
 	        inputs.name.val('');
 	        inputs.calories.val('');
 	      }
 	    }
 	  }, {
-	    key: 'handleDelete',
-	    value: function handleDelete(event) {
-	      var $tr = (0, _jquery2.default)(event.currentTarget).closest('tr');
+	    key: 'handleClickDelete',
+	    value: function handleClickDelete(event) {
+	      var $tr = (0, _jquery2.default)(event.currentTarget.closest('tr'));
 	      $tr.hide();
 	      this.service.destroy($tr.data('id')).then(function () {
 	        return $tr.remove();
@@ -149,65 +166,70 @@
 	      });
 	    }
 	  }, {
-	    key: 'handleStartEdit',
-	    value: function handleStartEdit(event) {
-	      var $td = (0, _jquery2.default)(event.target);
-	      var field = $td.data('field');
-	      var $input = this.$.inputs[field].clone();
-	      $input.val($td.text());
-	      $td.replaceWith($input);
-	      $input.focus();
-	      this.waitToStopEditing({ $td: $td, $input: $input, field: field });
-	    }
-	  }, {
-	    key: 'handleFilter',
-	    value: function handleFilter(event) {
+	    key: 'handleFilterKeyup',
+	    value: function handleFilterKeyup(event) {
 	      var term = this.$.inputs.filter.val().toLowerCase();
 	      (0, _jquery2.default)('td.name').each(function (_, td) {
 	        (0, _jquery2.default)(td).closest('tr').toggle(td.innerHTML.toLowerCase().startsWith(term));
 	      });
 	    }
 	  }, {
-	    key: 'waitToStopEditing',
-	    value: function (_waitToStopEditing) {
-	      function waitToStopEditing(_x) {
-	        return _waitToStopEditing.apply(this, arguments);
-	      }
+	    key: 'handleClick',
+	    value: function handleClick(_ref2) {
+	      var target = _ref2.target;
 
-	      waitToStopEditing.toString = function () {
-	        return _waitToStopEditing.toString();
-	      };
-
-	      return waitToStopEditing;
-	    }(function (_ref) {
-	      var _this2 = this;
-
-	      var $td = _ref.$td,
-	          $input = _ref.$input,
-	          field = _ref.field;
-
-	      this.$.body.one('click', function (event) {
-	        if ((0, _jquery2.default)(event.target) === $input) return waitToStopEditing({ $td: $td, $input: $input, field: field });
-	        var newValue = $input.val();
-	        var oldValue = $td.text();
-	        $td.text(newValue);
-	        $input.replaceWith($td);
-	        if (newValue !== oldValue) {
-	          var id = $td.closest('tr').data('id');
-	          _this2.service.update(id, field, newValue).catch(function () {
-	            return $td.text(oldValue);
-	          });
-	        }
-	      });
-	    })
+	      var $target = (0, _jquery2.default)(target);
+	      if (this.editing && $target !== this.editing.$input) this.submitEdit();
+	      if ($target.hasClass('data')) this.startEdit($target);
+	    }
 	  }, {
-	    key: 'handlePrepend',
-	    value: function handlePrepend(_ref2) {
-	      var id = _ref2.id,
-	          name = _ref2.name,
-	          calories = _ref2.calories;
+	    key: 'handleEditorKeydown',
+	    value: function handleEditorKeydown(_ref3) {
+	      var key = _ref3.key;
 
-	      this.$.data.prepend('\n      <tr data-id="' + id + '">\n        <td class="data name" data-field="name">' + name + '</td>\n        <td class="data" data-field="calories">' + calories + '</td>\n        <td>\n          <button class="delete">Delete</button>\n        </td>\n      </tr>\n    ');
+	      if (key === "Enter") this.submitEdit();
+	      if (key === "Escape") this.cancelEdit();
+	    }
+	  }, {
+	    key: 'startEdit',
+	    value: function startEdit($td) {
+	      var field = $td.data('field');
+	      var $input = this.$.inputs[field].clone();
+	      $input.val($td.text());
+	      $input.addClass('editor');
+	      $td.replaceWith($input);
+	      $input.focus();
+	      this.editing = { $td: $td, $input: $input, field: field };
+	    }
+	  }, {
+	    key: 'cancelEdit',
+	    value: function cancelEdit() {
+	      var _editing = this.editing,
+	          $td = _editing.$td,
+	          $input = _editing.$input;
+
+	      this.editing = null;
+	      $input.replaceWith($td);
+	    }
+	  }, {
+	    key: 'submitEdit',
+	    value: function submitEdit() {
+	      var _editing2 = this.editing,
+	          $td = _editing2.$td,
+	          $input = _editing2.$input,
+	          field = _editing2.field;
+
+	      this.editing = null;
+	      var newValue = $input.val();
+	      var oldValue = $td.text();
+	      $td.text(newValue);
+	      $input.replaceWith($td);
+	      if (newValue !== oldValue) {
+	        var id = $td.closest('tr').data('id');
+	        this.service.update(id, field, newValue).catch(function () {
+	          return $td.text(oldValue);
+	        });
+	      }
 	    }
 	  }, {
 	    key: 'sortByIdDescending',
@@ -221,7 +243,7 @@
 	    value: function grabElements() {
 	      return {
 	        body: (0, _jquery2.default)(document.body),
-	        form: (0, _jquery2.default)('form.add-food'),
+	        addFood: (0, _jquery2.default)('form.add-food'),
 	        data: (0, _jquery2.default)('table.foods tbody'),
 	        errors: (0, _jquery2.default)('.errors'),
 	        inputs: {
