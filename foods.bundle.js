@@ -92,7 +92,7 @@
 
 	    this.service = new _foodsService2.default();
 	    this.$ = this.grabElements();
-	    _lodash2.default.bindAll(this, 'handleSubmit', 'handleDelete', 'handlePrepend', 'handleStartEdit');
+	    _lodash2.default.bindAll(this, 'handleSubmit', 'handleDelete', 'handlePrepend', 'handleStartEdit', 'handleFilter');
 	  }
 
 	  _createClass(FoodsHandler, [{
@@ -107,19 +107,12 @@
 	  }, {
 	    key: 'listen',
 	    value: function listen() {
-	      this.$.body.on('click', '.data', this.handleStartEdit);
-	      this.$.data.on('click', '.delete', this.handleDelete);
 	      this.$.form.submit(this.handleSubmit);
-	    }
-	  }, {
-	    key: 'handleDelete',
-	    value: function handleDelete(event) {
-	      var $tr = (0, _jquery2.default)(event.currentTarget).closest('tr');
-	      $tr.hide();
-	      this.service.destroy($tr.data('id')).then(function () {
-	        return $tr.remove();
-	      }).catch(function () {
-	        return $tr.show();
+	      this.$.data.on('click', '.delete', this.handleDelete);
+	      this.$.body.on('click', '.data', this.handleStartEdit);
+	      this.$.inputs.filter.keyup(this.handleFilter);
+	      (0, _jquery2.default)('form.filter').submit(function (e) {
+	        return e.preventDefault();
 	      });
 	    }
 	  }, {
@@ -145,6 +138,17 @@
 	      }
 	    }
 	  }, {
+	    key: 'handleDelete',
+	    value: function handleDelete(event) {
+	      var $tr = (0, _jquery2.default)(event.currentTarget).closest('tr');
+	      $tr.hide();
+	      this.service.destroy($tr.data('id')).then(function () {
+	        return $tr.remove();
+	      }).catch(function () {
+	        return $tr.show();
+	      });
+	    }
+	  }, {
 	    key: 'handleStartEdit',
 	    value: function handleStartEdit(event) {
 	      var $td = (0, _jquery2.default)(event.target);
@@ -154,6 +158,14 @@
 	      $td.replaceWith($input);
 	      $input.focus();
 	      this.waitToStopEditing({ $td: $td, $input: $input, field: field });
+	    }
+	  }, {
+	    key: 'handleFilter',
+	    value: function handleFilter(event) {
+	      var term = this.$.inputs.filter.val();
+	      (0, _jquery2.default)('td.name').each(function (_, td) {
+	        (0, _jquery2.default)(td).closest('tr').toggle(td.innerHTML.startsWith(term));
+	      });
 	    }
 	  }, {
 	    key: 'waitToStopEditing',
@@ -195,7 +207,7 @@
 	          name = _ref2.name,
 	          calories = _ref2.calories;
 
-	      this.$.data.prepend('\n      <tr data-id="' + id + '">\n        <td class="data" data-field="name">' + name + '</td>\n        <td class="data" data-field="calories">' + calories + '</td>\n        <td>\n          <button class="delete">Delete</button>\n        </td>\n      </tr>\n    ');
+	      this.$.data.prepend('\n      <tr data-id="' + id + '">\n        <td class="data name" data-field="name">' + name + '</td>\n        <td class="data" data-field="calories">' + calories + '</td>\n        <td>\n          <button class="delete">Delete</button>\n        </td>\n      </tr>\n    ');
 	    }
 	  }, {
 	    key: 'sortByIdDescending',
@@ -214,7 +226,8 @@
 	        errors: (0, _jquery2.default)('.errors'),
 	        inputs: {
 	          name: (0, _jquery2.default)('form input[name="name"]'),
-	          calories: (0, _jquery2.default)('form input[name="calories"]')
+	          calories: (0, _jquery2.default)('form input[name="calories"]'),
+	          filter: (0, _jquery2.default)('form input[name="filter"]')
 	        }
 	      };
 	    }
