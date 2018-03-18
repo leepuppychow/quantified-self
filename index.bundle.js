@@ -28014,7 +28014,7 @@
 
 	    this.service = new _mealsService2.default();
 	    this.$ = this.grabElements();
-	    _lodash2.default.bindAll(this, 'populateMeal');
+	    _lodash2.default.bindAll(this, 'populateMeal', 'fillTotalCaloriesTable');
 	    this.totals = {
 	      Breakfast: 0,
 	      Lunch: 0,
@@ -28036,9 +28036,7 @@
 
 	      this.service.index().then(function (meals) {
 	        return meals.forEach(_this.populateMeal);
-	      }).then(function () {
-	        return _this.fillTotalCaloriesTable();
-	      });
+	      }).then(this.fillTotalCaloriesTable);
 	    }
 	  }, {
 	    key: 'listen',
@@ -28076,8 +28074,8 @@
 	  }, {
 	    key: 'fillTotalCaloriesTable',
 	    value: function fillTotalCaloriesTable() {
-	      var totalGoal = this.getTotalGoalCalories();
-	      var totalConsumed = this.getTotalConsumed();
+	      var totalGoal = this.sumCalories(this.goalCaloriesPerMeal);
+	      var totalConsumed = this.sumCalories(this.totals);
 	      var totalRemaining = totalGoal - totalConsumed;
 	      (0, _jquery2.default)("#total-calories-goal").html(totalGoal);
 	      (0, _jquery2.default)("#total-calories-consumed").html(totalConsumed);
@@ -28085,23 +28083,16 @@
 	      this.addRemainingCalsStyle(totalRemaining, (0, _jquery2.default)("#total-calories-remaining"));
 	    }
 	  }, {
-	    key: 'getTotalGoalCalories',
-	    value: function getTotalGoalCalories() {
-	      return Object.values(this.goalCaloriesPerMeal).reduce(function (sum, meal) {
-	        return sum += meal;
-	      });
-	    }
-	  }, {
-	    key: 'getTotalConsumed',
-	    value: function getTotalConsumed() {
-	      return Object.values(this.totals).reduce(function (sum, meal) {
+	    key: 'sumCalories',
+	    value: function sumCalories(object) {
+	      return Object.values(object).reduce(function (sum, meal) {
 	        return sum += meal;
 	      });
 	    }
 	  }, {
 	    key: 'addRemainingCalsStyle',
 	    value: function addRemainingCalsStyle(calories, element) {
-	      calories <= 0 ? element.addClass('negative-calories') : element.addClass('positive-calories');
+	      element.addClass(calories <= 0 ? 'negative-calories' : 'positive-calories');
 	    }
 	  }, {
 	    key: 'grabElements',
