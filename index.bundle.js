@@ -28092,7 +28092,7 @@
 	  }, {
 	    key: 'addRemainingCalsStyle',
 	    value: function addRemainingCalsStyle(calories, element) {
-	      element.addClass(calories <= 0 ? 'negative-calories' : 'positive-calories');
+	      element.addClass(calories >= 0 ? 'positive-calories' : 'negative-calories');
 	    }
 	  }, {
 	    key: 'grabElements',
