@@ -5,135 +5,141 @@
   <title>Quantified Self - Diary</title>
 </head>
 <body>
+  <header>
+    <h1>Quantified Self</h1>
+    <a href="/foods.html">foods</a>
+    <a href="/">meals</a>
+  </header>
 
-  <h3>Foods</h3>
-  <button type="button" id="new-food-button">Create New Food</button>
-  <h4>Add Food To:</h4>
-  <select class="" name="">
-    <option value="breakfast">Breakfast</option>
-    <option value="lunch">Lunch</option>
-    <option value="dinner">Dinner</option>
-    <option value="snacks">Snacks</option>
-  </select>
-  <br><br>
-  <form class="search-food">
-    <label>Search by Food Name:
-      <input name="name">
-    </label>
-  </form>
-  <br><br>
-  <table class="foods">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Calories</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody />
-  </table>
+  <main>
+    <h3>Foods</h3>
+    <button type="button" id="new-food-button">Create New Food</button>
+    <h4>Add Food To:</h4>
+    <select class="" name="">
+      <option value="breakfast">Breakfast</option>
+      <option value="lunch">Lunch</option>
+      <option value="dinner">Dinner</option>
+      <option value="snacks">Snacks</option>
+    </select>
+    <br><br>
+    <form class="search-food">
+      <label>Search by Food Name:
+        <input name="name">
+      </label>
+    </form>
+    <br><br>
+    <table class="foods">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Calories</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody />
+    </table>
 
 
-  <h3>Breakfast</h3>
-  <table class="breakfast">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Calories</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Total Calories</td>
-        <td id="breakfast-total-calories"></td>
-      </tr>
-      <tr>
-        <td>Remaining Calories</td>
-        <td id="breakfast-remaining-calories"></td>
-      </tr>
-    </tbody>
-  </table>
+    <h3>Breakfast</h3>
+    <table class="breakfast">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Calories</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Total Calories</td>
+          <td id="breakfast-total-calories"></td>
+        </tr>
+        <tr>
+          <td>Remaining Calories</td>
+          <td id="breakfast-remaining-calories"></td>
+        </tr>
+      </tbody>
+    </table>
 
-  <h3>Lunch</h3>
-  <table class="lunch">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Calories</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Total Calories</td>
-        <td id="lunch-total-calories"></td>
-      </tr>
-      <tr>
-        <td>Remaining Calories</td>
-        <td id="lunch-remaining-calories"></td>
-      </tr>
-    </tbody>
-  </table>
+    <h3>Lunch</h3>
+    <table class="lunch">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Calories</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Total Calories</td>
+          <td id="lunch-total-calories"></td>
+        </tr>
+        <tr>
+          <td>Remaining Calories</td>
+          <td id="lunch-remaining-calories"></td>
+        </tr>
+      </tbody>
+    </table>
 
-  <h3>Dinner</h3>
-  <table class="dinner">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Calories</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Total Calories</td>
-        <td id="dinner-total-calories"></td>
-      </tr>
-      <tr>
-        <td>Remaining Calories</td>
-        <td id="dinner-remaining-calories"></td>
-      </tr>
-    </tbody>
-  </table>
+    <h3>Dinner</h3>
+    <table class="dinner">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Calories</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Total Calories</td>
+          <td id="dinner-total-calories"></td>
+        </tr>
+        <tr>
+          <td>Remaining Calories</td>
+          <td id="dinner-remaining-calories"></td>
+        </tr>
+      </tbody>
+    </table>
 
-  <h3>Snacks</h3>
-  <table class="snack">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Calories</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Total Calories</td>
-        <td id="snack-total-calories"></td>
-      </tr>
-      <tr>
-        <td>Remaining Calories</td>
-        <td id="snack-remaining-calories"></td>
-      </tr>
-    </tbody>
-  </table>
+    <h3>Snacks</h3>
+    <table class="snack">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Calories</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Total Calories</td>
+          <td id="snack-total-calories"></td>
+        </tr>
+        <tr>
+          <td>Remaining Calories</td>
+          <td id="snack-remaining-calories"></td>
+        </tr>
+      </tbody>
+    </table>
 
-  <h3>Totals</h3>
-  <table class="totals">
-    <thead>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Goal Calories</td>
-        <td id="total-calories-goal"></td>
-      </tr>
-      <tr>
-        <td>Calories Consumed</td>
-        <td id="total-calories-consumed"></td>
-      </tr>
-      <tr>
-        <td>Remaining Calories</td>
-        <td id="total-calories-remaining"></td>
-      </tr>
-    </tbody>
-  </table>
-
+    <h3>Totals</h3>
+    <table class="totals">
+      <thead>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Goal Calories</td>
+          <td id="total-calories-goal"></td>
+        </tr>
+        <tr>
+          <td>Calories Consumed</td>
+          <td id="total-calories-consumed"></td>
+        </tr>
+        <tr>
+          <td>Remaining Calories</td>
+          <td id="total-calories-remaining"></td>
+        </tr>
+      </tbody>
+    </table>
+  </main>
   <script src="index.bundle.js"></script>
 </body>
 </html>
