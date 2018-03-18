@@ -1,5 +1,5 @@
 ### STORIES CLOSED:
-<ID>: <Name>
+[<ID>: <Name>](https://www.pivotaltracker.com/story/show/<ID>)
 
 #### WHERE SHOULD REVIEWER START:
 
