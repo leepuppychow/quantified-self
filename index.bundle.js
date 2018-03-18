@@ -46,11 +46,11 @@
 
 	'use strict';
 
-	var _mealsHandler = __webpack_require__(11);
+	var _mealsHandler = __webpack_require__(12);
 
 	var _mealsHandler2 = _interopRequireDefault(_mealsHandler);
 
-	__webpack_require__(7);
+	__webpack_require__(14);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -27633,46 +27633,8 @@
 	exports.default = Service;
 
 /***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-
-	// load the styles
-	var content = __webpack_require__(8);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(10)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/sass-loader/index.js!./main.scss", function() {
-				var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/sass-loader/index.js!./main.scss");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(9)();
-	// imports
-
-
-	// module
-	exports.push([module.id, ".errors {\n  color: red;\n  line-height: 0;\n  font-style: italic; }\n\n.foods, .breakfast, .lunch, .dinner, .snack, .totals {\n  border: 1px solid black;\n  border-collapse: collapse; }\n  .foods tr, .foods th, .foods td, .breakfast tr, .breakfast th, .breakfast td, .lunch tr, .lunch th, .lunch td, .dinner tr, .dinner th, .dinner td, .snack tr, .snack th, .snack td, .totals tr, .totals th, .totals td {\n    border: 1px solid black; }\n\n.negative-calories {\n  color: red; }\n\n.positive-calories {\n  color: green; }\n", ""]);
-
-	// exports
-
-
-/***/ }),
+/* 7 */,
+/* 8 */,
 /* 9 */
 /***/ (function(module, exports) {
 
@@ -27729,7 +27691,8 @@
 
 
 /***/ }),
-/* 10 */
+/* 10 */,
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/*
@@ -27981,7 +27944,7 @@
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28000,7 +27963,7 @@
 
 	var _lodash2 = _interopRequireDefault(_lodash);
 
-	var _mealsService = __webpack_require__(12);
+	var _mealsService = __webpack_require__(13);
 
 	var _mealsService2 = _interopRequireDefault(_mealsService);
 
@@ -28109,7 +28072,7 @@
 	exports.default = MealsHandler;
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28167,6 +28130,46 @@
 	}(_service2.default);
 
 	exports.default = MealsService;
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(15);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(11)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/sass-loader/index.js!./index.scss", function() {
+				var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/sass-loader/index.js!./index.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(9)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".negative-calories {\n  color: red; }\n\n.positive-calories {\n  color: green; }\n", ""]);
+
+	// exports
+
 
 /***/ })
 /******/ ]);

@@ -130,7 +130,7 @@
 	          name = _ref.name,
 	          calories = _ref.calories;
 
-	      this.$.data.prepend('\n      <tr data-id="' + id + '">\n        <td class="data name" data-field="name">' + name + '</td>\n        <td class="data" data-field="calories">' + calories + '</td>\n        <td>\n          <button class="delete">Delete</button>\n        </td>\n      </tr>\n    ');
+	      this.$.data.prepend('\n      <tr data-id="' + id + '">\n        <td class="data name" data-field="name">' + name + '</td>\n        <td class="data" data-field="calories">' + calories + '</td>\n        <td>\n          <button class="delete">x</button>\n        </td>\n      </tr>\n    ');
 	    }
 	  }, {
 	    key: 'handleSubmitAddFood',
@@ -27909,14 +27909,14 @@
 	var content = __webpack_require__(8);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(10)(content, {});
+	var update = __webpack_require__(11)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/sass-loader/index.js!./main.scss", function() {
-				var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/sass-loader/index.js!./main.scss");
+			module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/sass-loader/index.js!./foods.scss", function() {
+				var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/sass-loader/index.js!./foods.scss");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
@@ -27931,10 +27931,11 @@
 
 	exports = module.exports = __webpack_require__(9)();
 	// imports
-
+	exports.i(__webpack_require__(10), "");
+	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Roboto);", ""]);
 
 	// module
-	exports.push([module.id, ".errors {\n  color: red;\n  line-height: 0;\n  font-style: italic; }\n\n.foods, .breakfast, .lunch, .dinner, .snack, .totals {\n  border: 1px solid black;\n  border-collapse: collapse; }\n  .foods tr, .foods th, .foods td, .breakfast tr, .breakfast th, .breakfast td, .lunch tr, .lunch th, .lunch td, .dinner tr, .dinner th, .dinner td, .snack tr, .snack th, .snack td, .totals tr, .totals th, .totals td {\n    border: 1px solid black; }\n\n.negative-calories {\n  color: red; }\n\n.positive-calories {\n  color: green; }\n", ""]);
+	exports.push([module.id, "body {\n  font-family: \"Roboto\", Helvetica, sans-serif;\n  background-color: #EFE; }\n\nheader {\n  position: fixed;\n  top: 0;\n  left: 0;\n  width: 90%;\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding: 2% 5%;\n  background-color: lightblue;\n  border-bottom: 3px solid black; }\n\nmain {\n  padding: 12% 0 0 5%; }\n\ntable {\n  border-collapse: collapse;\n  width: 60%; }\n  table tbody tr:nth-child(even) {\n    background-color: #EEF; }\n  table td {\n    padding: 3%; }\n    table td[data-field=\"calories\"] {\n      text-align: right; }\n\na {\n  text-decoration: none;\n  color: inherit;\n  border: 1px solid black;\n  background-color: lightgray;\n  padding: 10px;\n  border-radius: 10px; }\n\nh1 {\n  font-size: 3rem; }\n\nh2 {\n  font-size: 2rem; }\n\n.delete {\n  background-color: #d01;\n  color: white;\n  border-radius: 100%;\n  font-size: 1.3rem;\n  padding: 0 5px 2px 5px;\n  border: 1px solid white; }\n\n.errors {\n  color: red;\n  line-height: 1.5em;\n  font-style: italic; }\n\n.add-food {\n  position: fixed;\n  right: 10%;\n  top: 40%;\n  display: flex;\n  flex-direction: column;\n  border: 1px solid black;\n  background-color: #EEF; }\n  .add-food > * {\n    margin: 5px 20px; }\n\n.filter {\n  background-color: none; }\n", ""]);
 
 	// exports
 
@@ -27997,6 +27998,20 @@
 
 /***/ }),
 /* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(9)();
+	// imports
+
+
+	// module
+	exports.push([module.id, "/* http://meyerweb.com/eric/tools/css/reset/\n   v2.0 | 20110126\n   License: none (public domain)\n*/\n\nhtml, body, div, span, applet, object, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, acronym, address, big, cite, code,\ndel, dfn, em, img, ins, kbd, q, s, samp,\nsmall, strike, strong, sub, sup, tt, var,\nb, u, i, center,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details, embed,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, ruby, section, summary,\ntime, mark, audio, video {\n\tmargin: 0;\n\tpadding: 0;\n\tborder: 0;\n\tfont-size: 100%;\n\tfont: inherit;\n\tvertical-align: baseline;\n}\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure,\nfooter, header, hgroup, menu, nav, section {\n\tdisplay: block;\n}\nbody {\n\tline-height: 1;\n}\nol, ul {\n\tlist-style: none;\n}\nblockquote, q {\n\tquotes: none;\n}\nblockquote:before, blockquote:after,\nq:before, q:after {\n\tcontent: '';\n\tcontent: none;\n}\ntable {\n\tborder-collapse: collapse;\n\tborder-spacing: 0;\n}\n", ""]);
+
+	// exports
+
+
+/***/ }),
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/*
