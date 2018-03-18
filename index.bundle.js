@@ -28014,7 +28014,7 @@
 
 	    this.service = new _mealsService2.default();
 	    this.$ = this.grabElements();
-	    _lodash2.default.bindAll(this, 'handlePrepend', 'remainingCalories');
+	    _lodash2.default.bindAll(this, 'populateMeal');
 	  }
 
 	  _createClass(MealsHandler, [{
@@ -28023,15 +28023,15 @@
 	      var _this = this;
 
 	      this.service.index().then(function (meals) {
-	        return meals.forEach(_this.handlePrepend);
+	        return meals.forEach(_this.populateMeal);
 	      });
 	    }
 	  }, {
 	    key: 'listen',
 	    value: function listen() {}
 	  }, {
-	    key: 'handlePrepend',
-	    value: function handlePrepend(_ref) {
+	    key: 'populateMeal',
+	    value: function populateMeal(_ref) {
 	      var id = _ref.id,
 	          name = _ref.name,
 	          foods = _ref.foods;
@@ -28041,39 +28041,31 @@
 	        totalCalories += food.calories;
 	        (0, _jquery2.default)('.' + name.toLowerCase() + ' tbody').prepend('\n        <tr>\n          <th>' + food.name + '</th>\n          <th>' + food.calories + '</th>\n        </tr>\n        ');
 	      });
-	      this.totalCalories(name, totalCalories);
-	      this.remainingCalories(name, totalCalories);
+	      this.showTotalCalories(name, totalCalories);
+	      this.showRemainingCalories(name, totalCalories);
 	    }
 	  }, {
-	    key: 'totalCalories',
-	    value: function totalCalories(name, _totalCalories) {
-	      (0, _jquery2.default)('#' + name.toLowerCase() + '-total-calories').html(_totalCalories);
+	    key: 'showTotalCalories',
+	    value: function showTotalCalories(meal, totalCalories) {
+	      (0, _jquery2.default)('#' + meal.toLowerCase() + '-total-calories').html(totalCalories);
 	    }
 	  }, {
-	    key: 'remainingCalories',
-	    value: function remainingCalories(name, totalCalories) {
+	    key: 'showRemainingCalories',
+	    value: function showRemainingCalories(meal, totalCalories) {
 	      var goalCaloriesPerMeal = {
 	        Breakfast: 400,
 	        Snack: 200,
 	        Lunch: 600,
 	        Dinner: 800
 	      };
-	      var remainingCalories = goalCaloriesPerMeal[name] - totalCalories;
-	      (0, _jquery2.default)('#' + name.toLowerCase() + '-remaining-calories').html(remainingCalories);
+	      var remainingCalories = goalCaloriesPerMeal[meal] - totalCalories;
+	      (0, _jquery2.default)('#' + meal.toLowerCase() + '-remaining-calories').html(remainingCalories);
 	    }
 	  }, {
 	    key: 'grabElements',
 	    value: function grabElements() {
 	      return {
 	        body: (0, _jquery2.default)(document.body)
-	        // form: $('form.add-food'),
-	        // data: $('table.foods tbody'),
-	        // errors: $('.errors'),
-	        // inputs: {
-	        //   name: $(`form input[name="name"]`),
-	        //   calories: $(`form input[name="calories"]`),
-	        //   filter: $(`form input[name="filter"]`),
-	        // },
 	      };
 	    }
 	  }]);
