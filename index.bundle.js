@@ -27667,7 +27667,7 @@
 
 
 	// module
-	exports.push([module.id, ".errors {\n  color: red;\n  line-height: 0;\n  font-style: italic; }\n\n.foods, .breakfast, .lunch, .dinner, .snacks, .totals {\n  border: 1px solid black;\n  border-collapse: collapse; }\n  .foods tr, .foods th, .foods td, .breakfast tr, .breakfast th, .breakfast td, .lunch tr, .lunch th, .lunch td, .dinner tr, .dinner th, .dinner td, .snacks tr, .snacks th, .snacks td, .totals tr, .totals th, .totals td {\n    border: 1px solid black; }\n", ""]);
+	exports.push([module.id, ".errors {\n  color: red;\n  line-height: 0;\n  font-style: italic; }\n\n.foods, .breakfast, .lunch, .dinner, .snack, .totals {\n  border: 1px solid black;\n  border-collapse: collapse; }\n  .foods tr, .foods th, .foods td, .breakfast tr, .breakfast th, .breakfast td, .lunch tr, .lunch th, .lunch td, .dinner tr, .dinner th, .dinner td, .snack tr, .snack th, .snack td, .totals tr, .totals th, .totals td {\n    border: 1px solid black; }\n", ""]);
 
 	// exports
 
@@ -27986,6 +27986,10 @@
 
 	'use strict';
 
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _jquery = __webpack_require__(2);
@@ -28010,7 +28014,7 @@
 
 	    this.service = new _mealsService2.default();
 	    this.$ = this.grabElements();
-	    _lodash2.default.bindAll(this, 'handlePrepend');
+	    _lodash2.default.bindAll(this, 'handlePrepend', 'remainingCalories');
 	  }
 
 	  _createClass(MealsHandler, [{
@@ -28023,9 +28027,39 @@
 	      });
 	    }
 	  }, {
+	    key: 'listen',
+	    value: function listen() {}
+	  }, {
 	    key: 'handlePrepend',
-	    value: function handlePrepend() {
-	      debugger;
+	    value: function handlePrepend(_ref) {
+	      var id = _ref.id,
+	          name = _ref.name,
+	          foods = _ref.foods;
+
+	      var totalCalories = 0;
+	      foods.forEach(function (food) {
+	        totalCalories += food.calories;
+	        (0, _jquery2.default)('.' + name.toLowerCase() + ' tbody').prepend('\n        <tr>\n          <th>' + food.name + '</th>\n          <th>' + food.calories + '</th>\n        </tr>\n        ');
+	      });
+	      this.totalCalories(name, totalCalories);
+	      this.remainingCalories(name, totalCalories);
+	    }
+	  }, {
+	    key: 'totalCalories',
+	    value: function totalCalories(name, _totalCalories) {
+	      (0, _jquery2.default)('#' + name.toLowerCase() + '-total-calories').html(_totalCalories);
+	    }
+	  }, {
+	    key: 'remainingCalories',
+	    value: function remainingCalories(name, totalCalories) {
+	      var goalCaloriesPerMeal = {
+	        Breakfast: 400,
+	        Snack: 200,
+	        Lunch: 600,
+	        Dinner: 800
+	      };
+	      var remainingCalories = goalCaloriesPerMeal[name] - totalCalories;
+	      (0, _jquery2.default)('#' + name.toLowerCase() + '-remaining-calories').html(remainingCalories);
 	    }
 	  }, {
 	    key: 'grabElements',
@@ -28046,6 +28080,8 @@
 
 	  return MealsHandler;
 	}();
+
+	exports.default = MealsHandler;
 
 /***/ }),
 /* 12 */
