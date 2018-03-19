@@ -50,7 +50,7 @@
 
 	var _foodsHandler2 = _interopRequireDefault(_foodsHandler);
 
-	__webpack_require__(7);
+	__webpack_require__(8);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -78,7 +78,11 @@
 
 	var _lodash2 = _interopRequireDefault(_lodash);
 
-	var _foodsService = __webpack_require__(5);
+	var _handler = __webpack_require__(5);
+
+	var _handler2 = _interopRequireDefault(_handler);
+
+	var _foodsService = __webpack_require__(6);
 
 	var _foodsService2 = _interopRequireDefault(_foodsService);
 
@@ -86,23 +90,32 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var FoodsHandler = function () {
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var FoodsHandler = function (_Handler) {
+	  _inherits(FoodsHandler, _Handler);
+
 	  function FoodsHandler() {
 	    _classCallCheck(this, FoodsHandler);
 
-	    this.service = new _foodsService2.default();
-	    this.$ = this.grabElements();
-	    this.editing = null;
-	    _lodash2.default.bindAll(this, 'prependFood', 'handleFilterKeyup', 'handleSubmitAddFood', 'handleClickDelete', 'handleClick', 'handleEditorKeydown');
+	    var _this = _possibleConstructorReturn(this, (FoodsHandler.__proto__ || Object.getPrototypeOf(FoodsHandler)).call(this));
+
+	    _this.service = new _foodsService2.default();
+	    _this.$ = _this.grabElements();
+	    _this.editing = null;
+	    _lodash2.default.bindAll(_this, 'prependFood', 'handleFilterKeyup', 'handleSubmitAddFood', 'handleClickDelete', 'handleClick', 'handleEditorKeydown');
+	    return _this;
 	  }
 
 	  _createClass(FoodsHandler, [{
 	    key: 'populate',
 	    value: function populate() {
-	      var _this = this;
+	      var _this2 = this;
 
-	      this.service.index().then(this.sortByIdDescending).then(function (foods) {
-	        return foods.forEach(_this.prependFood);
+	      this.service.index().then(this.sortById).then(function (foods) {
+	        return foods.forEach(_this2.prependFood);
 	      });
 	    }
 	  }, {
@@ -124,13 +137,18 @@
 	      });
 	    }
 	  }, {
-	    key: 'prependFood',
-	    value: function prependFood(_ref) {
+	    key: 'renderFood',
+	    value: function renderFood(_ref) {
 	      var id = _ref.id,
 	          name = _ref.name,
 	          calories = _ref.calories;
 
-	      this.$.data.prepend('\n      <tr data-id="' + id + '">\n        <td class="data name" data-field="name">' + name + '</td>\n        <td class="data" data-field="calories">' + calories + '</td>\n        <td>\n          <button class="delete">x</button>\n        </td>\n      </tr>\n    ');
+	      return '\n      <tr data-id="' + id + '">\n        <td class="data name" data-field="name">' + name + '</td>\n        <td class="data" data-field="calories">' + calories + '</td>\n        <td>\n          <button class="delete">x</button>\n        </td>\n      </tr>\n    ';
+	    }
+	  }, {
+	    key: 'prependFood',
+	    value: function prependFood(food) {
+	      this.$.data.prepend(this.renderFood(food));
 	    }
 	  }, {
 	    key: 'handleSubmitAddFood',
@@ -157,18 +175,12 @@
 	  }, {
 	    key: 'handleClickDelete',
 	    value: function handleClickDelete(event) {
+	      var _this3 = this;
+
 	      var $tr = (0, _jquery2.default)(event.currentTarget.closest('tr'));
 	      $tr.hide();
-	      this.service.destroy($tr.data('id')).then(function () {
-	        return $tr.remove();
-	      }).catch(this.restoreData($tr));
-	    }
-	  }, {
-	    key: 'handleFilterKeyup',
-	    value: function handleFilterKeyup(event) {
-	      var term = this.$.inputs.filter.val().toLowerCase();
-	      (0, _jquery2.default)('td.name').each(function (_, td) {
-	        (0, _jquery2.default)(td).closest('tr').toggle(td.innerHTML.toLowerCase().startsWith(term));
+	      this.service.destroy($tr.data('id')).then($tr.remove).catch(function () {
+	        return _this3.restoreData($tr);
 	      });
 	    }
 	  }, {
@@ -237,8 +249,8 @@
 	      alert(name + ' is part of this balanced breakfast!\nIt can\'t be deleted.');
 	    }
 	  }, {
-	    key: 'sortByIdDescending',
-	    value: function sortByIdDescending(list) {
+	    key: 'sortById',
+	    value: function sortById(list) {
 	      return list.sort(function (a, b) {
 	        return a.id - b.id;
 	      });
@@ -261,7 +273,7 @@
 	  }]);
 
 	  return FoodsHandler;
-	}();
+	}(_handler2.default);
 
 	exports.default = FoodsHandler;
 
@@ -27767,7 +27779,47 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _service = __webpack_require__(6);
+	var _jquery = __webpack_require__(2);
+
+	var _jquery2 = _interopRequireDefault(_jquery);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Handler = function () {
+	  function Handler() {
+	    _classCallCheck(this, Handler);
+	  }
+
+	  _createClass(Handler, [{
+	    key: 'handleFilterKeyup',
+	    value: function handleFilterKeyup(event) {
+	      var term = this.$.inputs.filter.val().toLowerCase();
+	      (0, _jquery2.default)('td.name').each(function (_index, td) {
+	        (0, _jquery2.default)(td).closest('tr').toggle(td.innerHTML.toLowerCase().startsWith(term));
+	      });
+	    }
+	  }]);
+
+	  return Handler;
+	}();
+
+	exports.default = Handler;
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _service = __webpack_require__(7);
 
 	var _service2 = _interopRequireDefault(_service);
 
@@ -27797,7 +27849,7 @@
 	    }
 	  }, {
 	    key: 'show',
-	    value: function show() {
+	    value: function show(id) {
 	      return this.fetch('foods/' + id);
 	    }
 	  }, {
@@ -27823,7 +27875,7 @@
 	exports.default = FoodsService;
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -27905,16 +27957,16 @@
 	exports.default = Service;
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(8);
+	var content = __webpack_require__(9);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(11)(content, {});
+	var update = __webpack_require__(12)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -27931,12 +27983,12 @@
 	}
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(9)();
+	exports = module.exports = __webpack_require__(10)();
 	// imports
-	exports.i(__webpack_require__(10), "");
+	exports.i(__webpack_require__(11), "");
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Roboto);", ""]);
 
 	// module
@@ -27946,7 +27998,7 @@
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports) {
 
 	/*
@@ -28002,10 +28054,10 @@
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(9)();
+	exports = module.exports = __webpack_require__(10)();
 	// imports
 
 
@@ -28016,7 +28068,7 @@
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/*
