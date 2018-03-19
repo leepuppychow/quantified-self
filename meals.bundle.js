@@ -170,12 +170,12 @@
 	  }, {
 	    key: 'handleClickDelete',
 	    value: function handleClickDelete(event) {
+	      var _this3 = this;
+
 	      var $tr = (0, _jquery2.default)(event.currentTarget.closest('tr'));
-	      $tr.hide();
-	      this.service.destroy($tr.data('id')).then(function () {
-	        return $tr.remove();
-	      }).catch(function () {
-	        return $tr.show();
+	      $tr.remove();
+	      this.service.destroy($tr.data('id')).catch(function () {
+	        return _this3.restoreData($tr);
 	      });
 	    }
 	  }, {
@@ -235,6 +235,13 @@
 	          return $td.text(oldValue);
 	        });
 	      }
+	    }
+	  }, {
+	    key: 'restoreData',
+	    value: function restoreData($tr) {
+	      this.$.data.prepend($tr);
+	      var name = $tr.find('td.name').text();
+	      alert(name + ' is part of this balanced breakfast!\nIt can\'t be deleted.');
 	    }
 	  }, {
 	    key: 'sortByIdDescending',
@@ -28485,8 +28492,8 @@
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/sass-loader/index.js!./index.scss", function() {
-				var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/sass-loader/index.js!./index.scss");
+			module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/index.js!./meals.scss", function() {
+				var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/index.js!./meals.scss");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
