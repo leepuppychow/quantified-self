@@ -46,11 +46,11 @@
 
 	'use strict';
 
-	var _mealsHandler = __webpack_require__(12);
+	var _mealsHandler = __webpack_require__(13);
 
 	var _mealsHandler2 = _interopRequireDefault(_mealsHandler);
 
-	__webpack_require__(14);
+	__webpack_require__(15);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -59,7 +59,213 @@
 	handler.listen();
 
 /***/ }),
-/* 1 */,
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _jquery = __webpack_require__(2);
+
+	var _jquery2 = _interopRequireDefault(_jquery);
+
+	var _lodash = __webpack_require__(3);
+
+	var _lodash2 = _interopRequireDefault(_lodash);
+
+	var _handler = __webpack_require__(5);
+
+	var _handler2 = _interopRequireDefault(_handler);
+
+	var _foodsService = __webpack_require__(6);
+
+	var _foodsService2 = _interopRequireDefault(_foodsService);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var FoodsHandler = function (_Handler) {
+	  _inherits(FoodsHandler, _Handler);
+
+	  function FoodsHandler() {
+	    _classCallCheck(this, FoodsHandler);
+
+	    var _this = _possibleConstructorReturn(this, (FoodsHandler.__proto__ || Object.getPrototypeOf(FoodsHandler)).call(this));
+
+	    _this.service = new _foodsService2.default();
+	    _this.$ = _this.grabElements();
+	    _this.editing = null;
+	    _lodash2.default.bindAll(_this, 'prependFood', 'handleFilterKeyup', 'handleSubmitAddFood', 'handleClickDelete', 'handleClick', 'handleEditorKeydown');
+	    return _this;
+	  }
+
+	  _createClass(FoodsHandler, [{
+	    key: 'populate',
+	    value: function populate() {
+	      var _this2 = this;
+
+	      this.service.index().then(this.sortByIdDescending).then(function (foods) {
+	        return foods.forEach(_this2.prependFood);
+	      });
+	    }
+	  }, {
+	    key: 'listen',
+	    value: function listen() {
+	      var _$ = this.$,
+	          addFood = _$.addFood,
+	          data = _$.data,
+	          body = _$.body,
+	          inputs = _$.inputs;
+
+	      inputs.filter.keyup(this.handleFilterKeyup);
+	      addFood.submit(this.handleSubmitAddFood);
+	      data.on('click', '.delete', this.handleClickDelete);
+	      body.click(this.handleClick);
+	      body.on('keydown', '.editor', this.handleEditorKeydown);
+	      (0, _jquery2.default)('form.filter').submit(function (e) {
+	        return e.preventDefault();
+	      });
+	    }
+	  }, {
+	    key: 'prependFood',
+	    value: function prependFood(_ref) {
+	      var id = _ref.id,
+	          name = _ref.name,
+	          calories = _ref.calories;
+
+	      this.$.data.prepend('\n      <tr data-id="' + id + '">\n        <td class="data name" data-field="name">' + name + '</td>\n        <td class="data" data-field="calories">' + calories + '</td>\n        <td>\n          <button class="delete">x</button>\n        </td>\n      </tr>\n    ');
+	    }
+	  }, {
+	    key: 'handleSubmitAddFood',
+	    value: function handleSubmitAddFood(event) {
+	      event.preventDefault();
+	      var _$2 = this.$,
+	          errors = _$2.errors,
+	          inputs = _$2.inputs;
+
+	      var food = {
+	        name: inputs.name.val(),
+	        calories: inputs.calories.val()
+	      };
+	      var errorText = '';
+	      if (!food.name) errorText += '<p>Please enter a food name</p>';
+	      if (!food.calories) errorText += '<p>Please enter a calorie amount</p>';
+	      errors.html(errorText);
+	      if (!errorText.length) {
+	        this.service.create(food).then(this.prependFood);
+	        inputs.name.val('');
+	        inputs.calories.val('');
+	      }
+	    }
+	  }, {
+	    key: 'handleClickDelete',
+	    value: function handleClickDelete(event) {
+	      var $tr = (0, _jquery2.default)(event.currentTarget.closest('tr'));
+	      $tr.hide();
+	      this.service.destroy($tr.data('id')).then(function () {
+	        return $tr.remove();
+	      }).catch(function () {
+	        return $tr.show();
+	      });
+	    }
+	  }, {
+	    key: 'handleClick',
+	    value: function handleClick(_ref2) {
+	      var target = _ref2.target;
+
+	      var $target = (0, _jquery2.default)(target);
+	      if (this.editing && !$target.hasClass('editor')) this.submitEdit();
+	      if ($target.hasClass('data')) this.startEdit($target);
+	    }
+	  }, {
+	    key: 'handleEditorKeydown',
+	    value: function handleEditorKeydown(_ref3) {
+	      var key = _ref3.key;
+
+	      if (key === "Enter") this.submitEdit();
+	      if (key === "Escape") this.cancelEdit();
+	    }
+	  }, {
+	    key: 'startEdit',
+	    value: function startEdit($td) {
+	      var field = $td.data('field');
+	      var $input = this.$.inputs[field].clone();
+	      $input.val($td.text());
+	      $input.addClass('editor');
+	      $td.replaceWith($input);
+	      $input.focus();
+	      this.editing = { $td: $td, $input: $input, field: field };
+	    }
+	  }, {
+	    key: 'cancelEdit',
+	    value: function cancelEdit() {
+	      var _editing = this.editing,
+	          $td = _editing.$td,
+	          $input = _editing.$input;
+
+	      this.editing = null;
+	      $input.replaceWith($td);
+	    }
+	  }, {
+	    key: 'submitEdit',
+	    value: function submitEdit() {
+	      var _editing2 = this.editing,
+	          $td = _editing2.$td,
+	          $input = _editing2.$input,
+	          field = _editing2.field;
+
+	      this.editing = null;
+	      var newValue = $input.val();
+	      var oldValue = $td.text();
+	      $td.text(newValue);
+	      $input.replaceWith($td);
+	      if (newValue !== oldValue) {
+	        var id = $td.closest('tr').data('id');
+	        this.service.update(id, field, newValue).catch(function () {
+	          return $td.text(oldValue);
+	        });
+	      }
+	    }
+	  }, {
+	    key: 'sortByIdDescending',
+	    value: function sortByIdDescending(list) {
+	      return list.sort(function (a, b) {
+	        return a.id - b.id;
+	      });
+	    }
+	  }, {
+	    key: 'grabElements',
+	    value: function grabElements() {
+	      return {
+	        body: (0, _jquery2.default)(document.body),
+	        addFood: (0, _jquery2.default)('form.add-food'),
+	        data: (0, _jquery2.default)('table.foods tbody'),
+	        errors: (0, _jquery2.default)('.errors'),
+	        inputs: {
+	          name: (0, _jquery2.default)('form input[name="name"]'),
+	          calories: (0, _jquery2.default)('form input[name="calories"]'),
+	          filter: (0, _jquery2.default)('form input[name="filter"]')
+	        }
+	      };
+	    }
+	  }]);
+
+	  return FoodsHandler;
+	}(_handler2.default);
+
+	exports.default = FoodsHandler;
+
+/***/ }),
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -27550,8 +27756,114 @@
 
 
 /***/ }),
-/* 5 */,
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _jquery = __webpack_require__(2);
+
+	var _jquery2 = _interopRequireDefault(_jquery);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Handler = function () {
+	  function Handler() {
+	    _classCallCheck(this, Handler);
+	  }
+
+	  _createClass(Handler, [{
+	    key: 'handleFilterKeyup',
+	    value: function handleFilterKeyup(event) {
+	      var term = this.$.inputs.filter.val().toLowerCase();
+	      (0, _jquery2.default)('td.name').each(function (_index, td) {
+	        (0, _jquery2.default)(td).closest('tr').toggle(td.innerHTML.toLowerCase().startsWith(term));
+	      });
+	    }
+	  }]);
+
+	  return Handler;
+	}();
+
+	exports.default = Handler;
+
+/***/ }),
 /* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _service = __webpack_require__(7);
+
+	var _service2 = _interopRequireDefault(_service);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var FoodsService = function (_Service) {
+	  _inherits(FoodsService, _Service);
+
+	  function FoodsService() {
+	    _classCallCheck(this, FoodsService);
+
+	    return _possibleConstructorReturn(this, (FoodsService.__proto__ || Object.getPrototypeOf(FoodsService)).apply(this, arguments));
+	  }
+
+	  _createClass(FoodsService, [{
+	    key: 'index',
+	    value: function index() {
+	      return this.fetch('foods');
+	    }
+	  }, {
+	    key: 'show',
+	    value: function show() {
+	      return this.fetch('foods/' + id);
+	    }
+	  }, {
+	    key: 'create',
+	    value: function create(food) {
+	      return this.send('POST', 'foods', { food: food });
+	    }
+	  }, {
+	    key: 'update',
+	    value: function update(id, field, value) {
+	      return this.send('PATCH', 'foods/' + id, _defineProperty({}, field, value));
+	    }
+	  }, {
+	    key: 'destroy',
+	    value: function destroy(id) {
+	      return this.send('DELETE', 'foods/' + id);
+	    }
+	  }]);
+
+	  return FoodsService;
+	}(_service2.default);
+
+	exports.default = FoodsService;
+
+/***/ }),
+/* 7 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -27633,9 +27945,9 @@
 	exports.default = Service;
 
 /***/ }),
-/* 7 */,
 /* 8 */,
-/* 9 */
+/* 9 */,
+/* 10 */
 /***/ (function(module, exports) {
 
 	/*
@@ -27691,8 +28003,8 @@
 
 
 /***/ }),
-/* 10 */,
-/* 11 */
+/* 11 */,
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/*
@@ -27944,7 +28256,7 @@
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -27963,51 +28275,72 @@
 
 	var _lodash2 = _interopRequireDefault(_lodash);
 
-	var _mealsService = __webpack_require__(13);
+	var _handler = __webpack_require__(5);
+
+	var _handler2 = _interopRequireDefault(_handler);
+
+	var _mealsService = __webpack_require__(14);
 
 	var _mealsService2 = _interopRequireDefault(_mealsService);
+
+	var _foodsHandler = __webpack_require__(1);
+
+	var _foodsHandler2 = _interopRequireDefault(_foodsHandler);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var MealsHandler = function () {
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var MealsHandler = function (_Handler) {
+	  _inherits(MealsHandler, _Handler);
+
 	  function MealsHandler() {
 	    _classCallCheck(this, MealsHandler);
 
-	    this.service = new _mealsService2.default();
-	    this.$ = this.grabElements();
-	    _lodash2.default.bindAll(this, 'populateMeal', 'fillTotalCaloriesTable');
-	    this.totals = {
+	    var _this = _possibleConstructorReturn(this, (MealsHandler.__proto__ || Object.getPrototypeOf(MealsHandler)).call(this));
+
+	    _this.service = new _mealsService2.default();
+	    _this.foodsHandler = new _foodsHandler2.default();
+	    _this.$ = _this.grabElements();
+	    _lodash2.default.bindAll(_this, 'populateMeal', 'fillTotalCaloriesTable', 'handleFilterKeyup');
+	    _this.totals = {
 	      Breakfast: 0,
 	      Lunch: 0,
 	      Dinner: 0,
 	      Snack: 0
 	    };
-	    this.goalCaloriesPerMeal = {
+	    _this.goalCaloriesPerMeal = {
 	      Breakfast: 400,
 	      Snack: 200,
 	      Lunch: 600,
 	      Dinner: 800
 	    };
+	    return _this;
 	  }
 
 	  _createClass(MealsHandler, [{
 	    key: 'populate',
 	    value: function populate() {
-	      var _this = this;
+	      var _this2 = this;
 
 	      this.service.index().then(function (meals) {
-	        return meals.forEach(_this.populateMeal);
+	        return meals.forEach(_this2.populateMeal);
 	      }).then(this.fillTotalCaloriesTable);
+	      this.foodsHandler.populate();
 	    }
 	  }, {
 	    key: 'listen',
-	    value: function listen() {}
+	    value: function listen() {
+	      this.$.inputs.filter.keyup(this.handleFilterKeyup);
+	    }
 	  }, {
 	    key: 'populateMeal',
 	    value: function populateMeal(_ref) {
-	      var _this2 = this;
+	      var _this3 = this;
 
 	      var id = _ref.id,
 	          name = _ref.name,
@@ -28015,7 +28348,7 @@
 
 	      var totalCalories = 0;
 	      foods.forEach(function (food) {
-	        _this2.totals[name] += food.calories;
+	        _this3.totals[name] += food.calories;
 	        (0, _jquery2.default)('.' + name.toLowerCase() + ' tbody').prepend('\n        <tr>\n          <th>' + food.name + '</th>\n          <th>' + food.calories + '</th>\n        </tr>\n        ');
 	      });
 	      this.showTotalCalories(name, this.totals[name]);
@@ -28061,18 +28394,23 @@
 	    key: 'grabElements',
 	    value: function grabElements() {
 	      return {
-	        body: (0, _jquery2.default)(document.body)
+	        body: (0, _jquery2.default)(document.body),
+	        inputs: {
+	          name: (0, _jquery2.default)('form input[name="name"]'),
+	          calories: (0, _jquery2.default)('form input[name="calories"]'),
+	          filter: (0, _jquery2.default)('form input[name="filter"]')
+	        }
 	      };
 	    }
 	  }]);
 
 	  return MealsHandler;
-	}();
+	}(_handler2.default);
 
 	exports.default = MealsHandler;
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28083,7 +28421,7 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _service = __webpack_require__(6);
+	var _service = __webpack_require__(7);
 
 	var _service2 = _interopRequireDefault(_service);
 
@@ -28132,16 +28470,16 @@
 	exports.default = MealsService;
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(15);
+	var content = __webpack_require__(16);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(11)(content, {});
+	var update = __webpack_require__(12)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -28158,10 +28496,10 @@
 	}
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(9)();
+	exports = module.exports = __webpack_require__(10)();
 	// imports
 
 
