@@ -161,9 +161,7 @@
 	      $tr.hide();
 	      this.service.destroy($tr.data('id')).then(function () {
 	        return $tr.remove();
-	      }).catch(function () {
-	        return $tr.show();
-	      });
+	      }).catch(this.restoreData($tr));
 	    }
 	  }, {
 	    key: 'handleFilterKeyup',
@@ -230,6 +228,13 @@
 	          return $td.text(oldValue);
 	        });
 	      }
+	    }
+	  }, {
+	    key: 'restoreData',
+	    value: function restoreData($tr) {
+	      $tr.show();
+	      var name = $tr.find('td.name').text();
+	      alert(name + ' is part of this balanced breakfast!\nIt can\'t be deleted.');
 	    }
 	  }, {
 	    key: 'sortByIdDescending',
@@ -27915,8 +27920,8 @@
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/sass-loader/index.js!./foods.scss", function() {
-				var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/sass-loader/index.js!./foods.scss");
+			module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/index.js!./foods.scss", function() {
+				var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/index.js!./foods.scss");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});

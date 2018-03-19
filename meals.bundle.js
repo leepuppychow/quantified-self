@@ -28147,8 +28147,8 @@
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/sass-loader/index.js!./index.scss", function() {
-				var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/sass-loader/index.js!./index.scss");
+			module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/index.js!./meals.scss", function() {
+				var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/index.js!./meals.scss");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
@@ -28166,7 +28166,7 @@
 
 
 	// module
-	exports.push([module.id, ".negative-calories {\n  color: red; }\n\n.positive-calories {\n  color: green; }\n", ""]);
+	exports.push([module.id, ".negative-calories {\n  color: blue; }\n\n.positive-calories {\n  color: green; }\n", ""]);
 
 	// exports
 
