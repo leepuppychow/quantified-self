@@ -170,11 +170,13 @@
 	  }, {
 	    key: 'handleClickDelete',
 	    value: function handleClickDelete(event) {
+	      var _this3 = this;
+
 	      var $tr = (0, _jquery2.default)(event.currentTarget.closest('tr'));
-	      $tr.hide();
-	      this.service.destroy($tr.data('id')).then(function () {
-	        return $tr.remove();
-	      }).catch(this.restoreData($tr));
+	      $tr.remove();
+	      this.service.destroy($tr.data('id')).catch(function () {
+	        return _this3.restoreData($tr);
+	      });
 	    }
 	  }, {
 	    key: 'handleClick',
@@ -237,7 +239,7 @@
 	  }, {
 	    key: 'restoreData',
 	    value: function restoreData($tr) {
-	      $tr.show();
+	      this.$.data.prepend($tr);
 	      var name = $tr.find('td.name').text();
 	      alert(name + ' is part of this balanced breakfast!\nIt can\'t be deleted.');
 	    }
