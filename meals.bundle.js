@@ -27794,10 +27794,11 @@
 
 	  _createClass(Handler, [{
 	    key: 'handleFilterKeyup',
-	    value: function handleFilterKeyup(event) {
-	      var term = this.$.inputs.filter.val().toLowerCase();
+	    value: function handleFilterKeyup(_event) {
+	      var term = this.$.inputs.filter.val();
 	      (0, _jquery2.default)('td.name').each(function (_index, td) {
-	        (0, _jquery2.default)(td).closest('tr').toggle(td.innerHTML.toLowerCase().startsWith(term));
+	        var isMatch = td.innerHTML.toLowerCase().startsWith(term.toLowerCase());
+	        (0, _jquery2.default)(td).closest('tr').toggle(isMatch);
 	      });
 	    }
 	  }]);
