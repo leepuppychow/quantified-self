@@ -28357,6 +28357,12 @@
 	    value: function listen() {
 	      this.$.inputs.filter.keyup(this.handleFilterKeyup);
 	      this.$.tabs.click(this.showTab);
+	      this.$.newFood.click(this.goToFoodsPage);
+	    }
+	  }, {
+	    key: 'goToFoodsPage',
+	    value: function goToFoodsPage() {
+	      location.href = "foods.html";
 	    }
 	  }, {
 	    key: 'showTab',
@@ -28379,7 +28385,7 @@
 	      var totalCalories = 0;
 	      foods.forEach(function (food) {
 	        _this3.totals[name] += food.calories;
-	        (0, _jquery2.default)('.' + name.toLowerCase() + ' tbody').prepend('\n        <tr>\n          <th>' + food.name + '</th>\n          <th>' + food.calories + '</th>\n        </tr>\n        ');
+	        (0, _jquery2.default)('#' + name.toLowerCase() + ' tbody').prepend('\n        <tr>\n          <td>' + food.name + '</td>\n          <td>' + food.calories + '</td>\n        </tr>\n        ');
 	      });
 	      this.showTotalCalories(name, this.totals[name]);
 	      this.showRemainingCalories(name, this.totals[name]);
@@ -28431,7 +28437,8 @@
 	          filter: (0, _jquery2.default)('form input[name="filter"]')
 	        },
 	        tabs: (0, _jquery2.default)('.tab'),
-	        tables: (0, _jquery2.default)('.meal-table')
+	        tables: (0, _jquery2.default)('.meal-table'),
+	        newFood: (0, _jquery2.default)('#new-food-button')
 	      };
 	    }
 	  }]);
@@ -28537,7 +28544,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Roboto);", ""]);
 
 	// module
-	exports.push([module.id, "body {\n  font-family: \"Roboto\", Helvetica, sans-serif;\n  background-color: #EFE; }\n\nheader {\n  position: fixed;\n  top: 0;\n  left: 0;\n  width: 90%;\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding: 2% 5%;\n  background-color: lightblue;\n  border-bottom: 3px solid black; }\n\nmain {\n  padding: 12% 0 0 5%; }\n\ntable {\n  border-collapse: collapse;\n  width: 60%; }\n  table tbody tr:nth-child(even) {\n    background-color: #EEF; }\n  table td {\n    padding: 3%; }\n    table td[data-field=\"calories\"] {\n      text-align: right; }\n\na {\n  text-decoration: none;\n  color: inherit;\n  border: 1px solid black;\n  background-color: lightgray;\n  padding: 10px;\n  border-radius: 10px; }\n\nh1 {\n  font-size: 3rem; }\n\nh2 {\n  font-size: 2rem; }\n\nh3 {\n  font-size: 22px; }\n\ninput {\n  margin: 20px 0px;\n  font-size: 20px; }\n\nth {\n  text-align: left; }\n\n.delete {\n  background-color: #d01;\n  color: white;\n  border-radius: 100%;\n  font-size: 1.3rem;\n  padding: 0 5px 2px 5px;\n  border: 1px solid white; }\n\n.errors {\n  color: red;\n  line-height: 1.5em;\n  font-style: italic; }\n\n.flex-row-container {\n  display: flex;\n  flex-direction: row;\n  justify-content: space-around; }\n\n.flex-column-container {\n  display: flex;\n  flex-direction: column;\n  width: 80%;\n  margin-right: 10%; }\n\nth {\n  font-size: 24px;\n  padding: 20px;\n  border-bottom: 1px solid #ccc; }\n\ncaption, .foods thead, h2 {\n  font-size: 24px;\n  padding: 20px;\n  border: 1px solid #ccc;\n  background-color: lightgrey; }\n\n.negative-calories {\n  color: red; }\n\n.positive-calories {\n  color: green; }\n\n.meals-section, .foods {\n  width: 100%;\n  margin-right: 10%; }\n\n.tabs {\n  overflow: hidden;\n  border: 1px solid #ccc;\n  background-color: lightgrey; }\n\n.tabs button {\n  background-color: inherit;\n  float: left;\n  border: none;\n  outline: none;\n  cursor: pointer;\n  padding: 14px 16px;\n  transition: 0.3s; }\n  .tabs button:hover {\n    background-color: darkgrey; }\n\n.tab {\n  font-size: 20px; }\n\n.active-tab {\n  background-color: red; }\n\n.meal-table {\n  width: 100%;\n  display: none;\n  padding: 6px 12px;\n  border: 1px solid #ccc; }\n\n.meal-button, #new-food-button {\n  width: 30%; }\n\n.totals {\n  margin-top: 40px;\n  width: 100%;\n  padding: 6px 12px;\n  border: 1px solid #ccc; }\n\n#breakfast {\n  display: inline-table; }\n", ""]);
+	exports.push([module.id, "body {\n  font-family: \"Roboto\", Helvetica, sans-serif;\n  background-color: #EFE; }\n\nheader {\n  position: fixed;\n  top: 0;\n  left: 0;\n  width: 90%;\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding: 2% 5%;\n  background-color: lightblue;\n  border-bottom: 3px solid black; }\n\nmain {\n  padding: 12% 0 0 5%; }\n\ntable {\n  border-collapse: collapse;\n  width: 60%; }\n  table tbody tr:nth-child(even) {\n    background-color: #EEF; }\n  table td {\n    padding: 3%; }\n    table td[data-field=\"calories\"] {\n      text-align: right; }\n\na {\n  text-decoration: none;\n  color: inherit;\n  border: 1px solid black;\n  background-color: lightgray;\n  padding: 10px;\n  border-radius: 10px; }\n\nh1 {\n  font-size: 3rem; }\n\nh2 {\n  font-size: 2rem; }\n\nh3 {\n  font-size: 22px; }\n\ninput {\n  margin: 20px 0px;\n  font-size: 20px; }\n\nth {\n  text-align: left; }\n\n.delete {\n  background-color: #d01;\n  color: white;\n  border-radius: 100%;\n  font-size: 1.3rem;\n  padding: 0 5px 2px 5px;\n  border: 1px solid white; }\n\n.errors {\n  color: red;\n  line-height: 1.5em;\n  font-style: italic; }\n\n.flex-row-container {\n  display: flex;\n  flex-direction: row;\n  justify-content: space-around; }\n\n.flex-column-container {\n  display: flex;\n  flex-direction: column;\n  width: 80%;\n  margin-right: 10%; }\n\nth {\n  font-size: 24px;\n  padding: 20px;\n  border-bottom: 1px solid #ccc; }\n\nh2, caption, .foods thead {\n  font-size: 24px;\n  padding: 20px;\n  border: 1px solid #ccc;\n  background-color: lightgrey; }\n\n.negative-calories {\n  color: red; }\n\n.positive-calories {\n  color: green; }\n\n.meals-section, .foods {\n  width: 100%;\n  margin-right: 10%; }\n\n.tabs {\n  overflow: hidden;\n  border: 1px solid #ccc;\n  background-color: lightgrey; }\n\n.tabs button {\n  background-color: inherit;\n  float: left;\n  border: none;\n  outline: none;\n  cursor: pointer;\n  padding: 14px 16px;\n  transition: 0.3s; }\n  .tabs button:hover {\n    background-color: darkgrey; }\n\n.tab {\n  font-size: 20px; }\n\n.active-tab {\n  background-color: red; }\n\n.meal-table {\n  width: 100%;\n  display: none;\n  padding: 6px 12px;\n  border: 1px solid #ccc; }\n\n.meal-button, #new-food-button {\n  width: 30%;\n  font-size: 14px;\n  margin: 5px; }\n\n.totals {\n  margin-top: 40px;\n  width: 100%;\n  padding: 6px 12px;\n  border: 1px solid #ccc; }\n\n#breakfast {\n  display: inline-table; }\n", ""]);
 
 	// exports
 
