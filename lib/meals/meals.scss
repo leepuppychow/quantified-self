@@ -1,5 +1,16 @@
 @import "../shared/main";
 
+th{
+  font-size: 24px;
+  padding: 20px;
+  border-bottom: 1px solid #ccc;
+}
+caption{
+  font-size: 24px;
+  padding: 20px;
+  border: 1px solid #ccc;
+}
+
 .negative-calories {
   color: red;
 }
@@ -8,10 +19,55 @@
   color: green;
 }
 
-.meal-table {
-  display: none;
+.meals-section, .foods {
+  width: 100%;
+  margin-right: 10%;
 }
 
-#breakfast {
-  display: block;
+.tabs {
+  overflow: hidden;
+  border: 1px solid #ccc;
+}
+
+.tabs button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  &:hover{
+    background-color: #ddd;
+  }
+}
+
+.tab {
+  font-size: 20px;
+}
+
+.active-tab {
+  background-color: red;
+}
+
+.meal-table {
+  width: 100%;
+  display: none;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+}
+
+.meal-button, #new-food-button{
+  width: 30%;
+}
+
+.totals{
+  margin-top: 40px;
+  width: 100%;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+}
+
+#breakfast{
+  display: inline-table;
 }

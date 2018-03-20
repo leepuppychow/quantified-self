@@ -42,6 +42,17 @@ a {
 }
 h1 { font-size: 3rem }
 h2 { font-size: 2rem }
+h3 { font-size: 22px}
+
+input{
+  margin: 20px 0px;
+  font-size: 20px;
+}
+
+th{
+  text-align: left;
+}
+
 .delete {
   background-color: #d01;
   color: white;
@@ -63,4 +74,6 @@ h2 { font-size: 2rem }
 .flex-column-container {
   display: flex;
   flex-direction: column;
+  width: 80%;
+  margin-right: 10%;
 }
