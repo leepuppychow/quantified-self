@@ -28016,7 +28016,20 @@
 
 
 /***/ }),
-/* 11 */,
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(10)();
+	// imports
+
+
+	// module
+	exports.push([module.id, "/* http://meyerweb.com/eric/tools/css/reset/\n   v2.0 | 20110126\n   License: none (public domain)\n*/\n\nhtml, body, div, span, applet, object, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, acronym, address, big, cite, code,\ndel, dfn, em, img, ins, kbd, q, s, samp,\nsmall, strike, strong, sub, sup, tt, var,\nb, u, i, center,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details, embed,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, ruby, section, summary,\ntime, mark, audio, video {\n\tmargin: 0;\n\tpadding: 0;\n\tborder: 0;\n\tfont-size: 100%;\n\tfont: inherit;\n\tvertical-align: baseline;\n}\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure,\nfooter, header, hgroup, menu, nav, section {\n\tdisplay: block;\n}\nbody {\n\tline-height: 1;\n}\nol, ul {\n\tlist-style: none;\n}\nblockquote, q {\n\tquotes: none;\n}\nblockquote:before, blockquote:after,\nq:before, q:after {\n\tcontent: '';\n\tcontent: none;\n}\ntable {\n\tborder-collapse: collapse;\n\tborder-spacing: 0;\n}\n", ""]);
+
+	// exports
+
+
+/***/ }),
 /* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -28319,7 +28332,7 @@
 	    _this.service = new _mealsService2.default();
 	    _this.foodsHandler = new _foodsHandler2.default();
 	    _this.$ = _this.grabElements();
-	    _lodash2.default.bindAll(_this, 'populateMeal', 'fillTotalCaloriesTable', 'handleFilterKeyup');
+	    _lodash2.default.bindAll(_this, 'populateMeal', 'fillTotalCaloriesTable', 'handleFilterKeyup', 'showTab');
 	    _this.totals = {
 	      Breakfast: 0,
 	      Lunch: 0,
@@ -28349,6 +28362,15 @@
 	    key: 'listen',
 	    value: function listen() {
 	      this.$.inputs.filter.keyup(this.handleFilterKeyup);
+	      this.$.tabs.click(this.showTab);
+	    }
+	  }, {
+	    key: 'showTab',
+	    value: function showTab(event) {
+	      event.preventDefault();
+	      this.$.tables.each(function (_index, table) {
+	        (0, _jquery2.default)('#' + table.id).toggle(table.id === (0, _jquery2.default)(event.target).data("meal"));
+	      });
 	    }
 	  }, {
 	    key: 'populateMeal',
@@ -28411,7 +28433,9 @@
 	          name: (0, _jquery2.default)('form input[name="name"]'),
 	          calories: (0, _jquery2.default)('form input[name="calories"]'),
 	          filter: (0, _jquery2.default)('form input[name="filter"]')
-	        }
+	        },
+	        tabs: (0, _jquery2.default)('.tab'),
+	        tables: (0, _jquery2.default)('.meal-table')
 	      };
 	    }
 	  }]);
@@ -28513,10 +28537,11 @@
 
 	exports = module.exports = __webpack_require__(10)();
 	// imports
-
+	exports.i(__webpack_require__(11), "");
+	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Roboto);", ""]);
 
 	// module
-	exports.push([module.id, ".negative-calories {\n  color: red; }\n\n.positive-calories {\n  color: green; }\n", ""]);
+	exports.push([module.id, "body {\n  font-family: \"Roboto\", Helvetica, sans-serif;\n  background-color: #EFE; }\n\nheader {\n  position: fixed;\n  top: 0;\n  left: 0;\n  width: 90%;\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding: 2% 5%;\n  background-color: lightblue;\n  border-bottom: 3px solid black; }\n\nmain {\n  padding: 12% 0 0 5%; }\n\ntable {\n  border-collapse: collapse;\n  width: 60%; }\n  table tbody tr:nth-child(even) {\n    background-color: #EEF; }\n  table td {\n    padding: 3%; }\n    table td[data-field=\"calories\"] {\n      text-align: right; }\n\na {\n  text-decoration: none;\n  color: inherit;\n  border: 1px solid black;\n  background-color: lightgray;\n  padding: 10px;\n  border-radius: 10px; }\n\nh1 {\n  font-size: 3rem; }\n\nh2 {\n  font-size: 2rem; }\n\n.delete {\n  background-color: #d01;\n  color: white;\n  border-radius: 100%;\n  font-size: 1.3rem;\n  padding: 0 5px 2px 5px;\n  border: 1px solid white; }\n\n.errors {\n  color: red;\n  line-height: 1.5em;\n  font-style: italic; }\n\n.flex-row-container {\n  display: flex;\n  flex-direction: row;\n  justify-content: space-around; }\n\n.flex-column-container {\n  display: flex;\n  flex-direction: column; }\n\n.negative-calories {\n  color: red; }\n\n.positive-calories {\n  color: green; }\n\n.meal-table {\n  display: none; }\n\n#breakfast {\n  display: block; }\n", ""]);
 
 	// exports
 
