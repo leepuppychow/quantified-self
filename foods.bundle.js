@@ -114,7 +114,7 @@
 	    value: function populate() {
 	      var _this2 = this;
 
-	      this.service.index().then(this.sortByIdDescending).then(function (foods) {
+	      this.service.index().then(this.sortById).then(function (foods) {
 	        return foods.forEach(_this2.prependFood);
 	      });
 	    }
@@ -137,13 +137,22 @@
 	      });
 	    }
 	  }, {
-	    key: 'prependFood',
-	    value: function prependFood(_ref) {
+	    key: 'renderFood',
+	    value: function renderFood(_ref) {
 	      var id = _ref.id,
 	          name = _ref.name,
 	          calories = _ref.calories;
 
+<<<<<<< HEAD
 	      this.$.data.prepend('\n      <tr data-id="' + id + '">\n        <td class="check-box"><input class="food-checkbox" data-food-id="' + id + '" type="checkbox"></td>\n        <td class="data name" data-field="name">' + name + '</td>\n        <td class="data" data-field="calories">' + calories + '</td>\n        <td>\n          <button class="delete">x</button>\n        </td>\n      </tr>\n    ');
+=======
+	      return '\n      <tr data-id="' + id + '">\n        <td class="check-box"><input class="food-checkbox" data-food-id="' + id + '" type="checkbox"></td>\n        <td class="data name" data-field="name">' + name + '</td>\n        <td class="data" data-field="calories">' + calories + '</td>\n        <td>\n          <button class="delete">x</button>\n        </td>\n      </tr>\n    ';
+	    }
+	  }, {
+	    key: 'prependFood',
+	    value: function prependFood(food) {
+	      this.$.data.prepend(this.renderFood(food));
+>>>>>>> master
 	    }
 	  }, {
 	    key: 'handleSubmitAddFood',
@@ -173,8 +182,8 @@
 	      var _this3 = this;
 
 	      var $tr = (0, _jquery2.default)(event.currentTarget.closest('tr'));
-	      $tr.remove();
-	      this.service.destroy($tr.data('id')).catch(function () {
+	      $tr.hide();
+	      this.service.destroy($tr.data('id')).then($tr.remove).catch(function () {
 	        return _this3.restoreData($tr);
 	      });
 	    }
@@ -239,13 +248,13 @@
 	  }, {
 	    key: 'restoreData',
 	    value: function restoreData($tr) {
-	      this.$.data.prepend($tr);
+	      $tr.show();
 	      var name = $tr.find('td.name').text();
 	      alert(name + ' is part of this balanced breakfast!\nIt can\'t be deleted.');
 	    }
 	  }, {
-	    key: 'sortByIdDescending',
-	    value: function sortByIdDescending(list) {
+	    key: 'sortById',
+	    value: function sortById(list) {
 	      return list.sort(function (a, b) {
 	        return a.id - b.id;
 	      });
@@ -27789,10 +27798,11 @@
 
 	  _createClass(Handler, [{
 	    key: 'handleFilterKeyup',
-	    value: function handleFilterKeyup(event) {
-	      var term = this.$.inputs.filter.val().toLowerCase();
+	    value: function handleFilterKeyup(_event) {
+	      var term = this.$.inputs.filter.val();
 	      (0, _jquery2.default)('td.name').each(function (_index, td) {
-	        (0, _jquery2.default)(td).closest('tr').toggle(td.innerHTML.toLowerCase().startsWith(term));
+	        var isMatch = td.innerHTML.toLowerCase().startsWith(term.toLowerCase());
+	        (0, _jquery2.default)(td).closest('tr').toggle(isMatch);
 	      });
 	    }
 	  }]);
@@ -27844,7 +27854,7 @@
 	    }
 	  }, {
 	    key: 'show',
-	    value: function show() {
+	    value: function show(id) {
 	      return this.fetch('foods/' + id);
 	    }
 	  }, {
