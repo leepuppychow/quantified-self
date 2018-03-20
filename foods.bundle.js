@@ -143,16 +143,12 @@
 	          name = _ref.name,
 	          calories = _ref.calories;
 
-<<<<<<< HEAD
-	      this.$.data.prepend('\n      <tr data-id="' + id + '">\n        <td class="check-box"><input class="food-checkbox" data-food-id="' + id + '" type="checkbox"></td>\n        <td class="data name" data-field="name">' + name + '</td>\n        <td class="data" data-field="calories">' + calories + '</td>\n        <td>\n          <button class="delete">x</button>\n        </td>\n      </tr>\n    ');
-=======
 	      return '\n      <tr data-id="' + id + '">\n        <td class="check-box"><input class="food-checkbox" data-food-id="' + id + '" type="checkbox"></td>\n        <td class="data name" data-field="name">' + name + '</td>\n        <td class="data" data-field="calories">' + calories + '</td>\n        <td>\n          <button class="delete">x</button>\n        </td>\n      </tr>\n    ';
 	    }
 	  }, {
 	    key: 'prependFood',
 	    value: function prependFood(food) {
 	      this.$.data.prepend(this.renderFood(food));
->>>>>>> master
 	    }
 	  }, {
 	    key: 'handleSubmitAddFood',

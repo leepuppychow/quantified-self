@@ -143,16 +143,12 @@
 	          name = _ref.name,
 	          calories = _ref.calories;
 
-<<<<<<< HEAD
-	      this.$.data.prepend('\n      <tr data-id="' + id + '">\n        <td class="check-box"><input class="food-checkbox" data-food-id="' + id + '" type="checkbox"></td>\n        <td class="data name" data-field="name">' + name + '</td>\n        <td class="data" data-field="calories">' + calories + '</td>\n        <td>\n          <button class="delete">x</button>\n        </td>\n      </tr>\n    ');
-=======
 	      return '\n      <tr data-id="' + id + '">\n        <td class="check-box"><input class="food-checkbox" data-food-id="' + id + '" type="checkbox"></td>\n        <td class="data name" data-field="name">' + name + '</td>\n        <td class="data" data-field="calories">' + calories + '</td>\n        <td>\n          <button class="delete">x</button>\n        </td>\n      </tr>\n    ';
 	    }
 	  }, {
 	    key: 'prependFood',
 	    value: function prependFood(food) {
 	      this.$.data.prepend(this.renderFood(food));
->>>>>>> master
 	    }
 	  }, {
 	    key: 'handleSubmitAddFood',
@@ -28349,19 +28345,34 @@
 	      Lunch: 600,
 	      Dinner: 800
 	    };
+	    _this.mealList = {
+	      1: "breakfast",
+	      2: "snack",
+	      3: "lunch",
+	      4: "dinner"
+	    };
 	    return _this;
 	  }
 
 	  _createClass(MealsHandler, [{
 	    key: 'populate',
 	    value: function populate() {
+	      this.populateFoodsInEachMeal();
+	      this.populateFoodsTable();
+	    }
+	  }, {
+	    key: 'populateFoodsInEachMeal',
+	    value: function populateFoodsInEachMeal() {
 	      var _this2 = this;
 
-	      this.service.index().then(function (meals) {
+	      return this.service.index().then(function (meals) {
 	        return meals.forEach(_this2.populateMeal);
 	      }).then(this.fillTotalCaloriesTable);
+	    }
+	  }, {
+	    key: 'populateFoodsTable',
+	    value: function populateFoodsTable() {
 	      this.foodsHandler.populate();
-	      this.highlightBreakfastTab();
 	    }
 	  }, {
 	    key: 'listen',
@@ -28372,11 +28383,6 @@
 	      this.$.addMeal.click(this.addFoodToMeal);
 	    }
 	  }, {
-	    key: 'highlightBreakfastTab',
-	    value: function highlightBreakfastTab() {
-	      (0, _jquery2.default)(".tab:first-child").css("background-color", "darkgrey");
-	    }
-	  }, {
 	    key: 'addFoodToMeal',
 	    value: function addFoodToMeal(event) {
 	      var _this3 = this;
@@ -28384,10 +28390,28 @@
 	      event.preventDefault();
 	      var mealID = (0, _jquery2.default)(event.target).data("meal-id");
 	      var checkedFoods = (0, _jquery2.default)('.food-checkbox:checked');
-	      _jquery2.default.each(checkedFoods, function (_index, food) {
+	      var completed = _jquery2.default.map(checkedFoods, function (food) {
 	        var foodID = (0, _jquery2.default)(food).data("food-id");
-	        _this3.service.addFood(mealID, foodID);
+	        return _this3.service.addFood(mealID, foodID);
 	      });
+	      Promise.all(completed).finally(function () {
+	        return _this3.populateFoodsInEachMeal();
+	      }).then(function () {
+	        return _this3.switchToAppropriateMealTab(mealID);
+	      }).then(function () {
+	        return _this3.removeChecksFromBoxes(checkedFoods);
+	      });
+	    }
+	  }, {
+	    key: 'removeChecksFromBoxes',
+	    value: function removeChecksFromBoxes(checkedFoods) {
+	      checkedFoods.prop('checked', false);
+	    }
+	  }, {
+	    key: 'switchToAppropriateMealTab',
+	    value: function switchToAppropriateMealTab(mealID) {
+	      var meal = this.mealList[mealID];
+	      (0, _jquery2.default)('.tab[data-meal="' + meal + '"]').click();
 	    }
 	  }, {
 	    key: 'goToFoodsPage',
@@ -28415,11 +28439,7 @@
 
 	      foods.forEach(function (food) {
 	        _this4.totals[name] += food.calories;
-<<<<<<< HEAD
-	        (0, _jquery2.default)('#' + name.toLowerCase() + ' tbody').prepend('\n        <tr>\n          <td>' + food.name + '</td>\n          <td>' + food.calories + '</td>\n        </tr>\n        ');
-=======
 	        (0, _jquery2.default)('#' + name.toLowerCase() + ' tbody').prepend('\n        <tr>\n          <td>' + food.name + '</td>\n          <td>' + food.calories + '</td>\n        </tr>\n      ');
->>>>>>> master
 	      });
 	      this.showTotalCalories(name, this.totals[name]);
 	      this.showRemainingCalories(name, this.totals[name]);
