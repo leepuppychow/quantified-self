@@ -13,11 +13,12 @@
 
   <main>
     <div class="flex-row-container">
-      <div class="tabs">
-        <button class="tab" data-meal="breakfast" type="button">Breakfast</button>
-        <button class="tab" data-meal="lunch" type="button">Lunch</button>
-        <button class="tab" data-meal="dinner" type="button">Dinner</button>
-        <button class="tab" data-meal="snack" type="button">Snacks</button>
+      <div class="meals-section">
+        <div class="tabs">
+          <button class="tab" data-meal="breakfast" type="button">Breakfast</button>
+          <button class="tab" data-meal="lunch" type="button">Lunch</button>
+          <button class="tab" data-meal="dinner" type="button">Dinner</button>
+          <button class="tab" data-meal="snack" type="button">Snacks</button>
         <table class="meal-table" id="breakfast">
           <thead>
             <tr>
@@ -74,7 +75,6 @@
             </tr>
           </tbody>
         </table>
-
         <table class="meal-table" id="snack">
           <thead>
             <tr>
@@ -93,9 +93,10 @@
             </tr>
           </tbody>
         </table>
+      </div>
 
-        <h3>Totals</h3>
         <table class="totals">
+          <caption>Totals</caption>
           <thead>
           </thead>
           <tbody>
@@ -116,22 +117,26 @@
       </div>
 
       <div class="flex-column-container">
-        <h3>Foods</h3>
+        <h2>Foods</h2>
+        <br>
         <button type="button" id="new-food-button">Create New Food</button>
-        <h4>Add Food To:</h4>
-        <select class="" name="">
-          <option value="breakfast">Breakfast</option>
-          <option value="lunch">Lunch</option>
-          <option value="dinner">Dinner</option>
-          <option value="snacks">Snacks</option>
-        </select>
-        <br><br>
+        <br>
+        <h3>Add Food To:</h3>
+        <br>
+        <div>
+          <button type="button" class="meal-button">Breakfast</button>
+          <button type="button" class="meal-button">Lunch</button>
+        </div>
+        <div>
+          <button type="button" class="meal-button">Dinner</button>
+          <button type="button" class="meal-button">Snack</button>
+        </div>
+        <br>
         <form class="search-food">
           <label>Search by Food Name:
             <input name="filter">
           </label>
         </form>
-        <br><br>
         <table class="foods">
           <thead>
             <tr>
