@@ -1,0 +1,26 @@
+---
+  root: true
+  parser: babel-eslint
+  env:
+    es6: true
+    browser: true
+    node: true
+  extends:
+    eslint:recommended
+  rules:
+    no-unused-vars:
+      - error
+      - argsIgnorePattern: ^_ # allows omission and can increase clarity/debugging
+    semi:
+      - error
+      - never # lee prefers
+    comma-dangle:
+      - error
+      - always-multiline # josi prefers
+
+
+  overrides:
+    - files:
+      - test/**/*.test.js
+      env:
+        mocha: true

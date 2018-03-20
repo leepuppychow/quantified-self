@@ -17,11 +17,7 @@ npm start
 Once the server is running, visit http://localhost:8080 in your browser.
 
 ### Running the Tests
-To run the suite in the terminal, just type:
-```
-npm test
-```
-To run the suite in the browser, first run the server as usual with
+The tests currently need to run in a browser environment, so running `npm test` will always fail.  Instead, first boot the server as usual with
 ```
 npm start
 ```
