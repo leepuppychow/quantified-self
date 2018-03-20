@@ -52,10 +52,6 @@ h2, caption, .foods thead {
   display: inline-table;
 }
 
-#breakfast{
-  display: inline-table;
-}
-
 .meal-table {
   width: 100%;
   display: none;
@@ -74,4 +70,8 @@ h2, caption, .foods thead {
   width: 100%;
   padding: 6px 12px;
   border: 1px solid #ccc;
+}
+
+#breakfast{
+  display: inline-table;
 }
