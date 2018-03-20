@@ -32,13 +32,11 @@ h2, caption, .foods thead {
 }
 
 .tabs button {
-  background-color: inherit;
   float: left;
   border: none;
   outline: none;
   cursor: pointer;
   padding: 14px 16px;
-  transition: 0.3s;
   &:hover{
     background-color: darkgrey;
   }
@@ -46,10 +44,8 @@ h2, caption, .foods thead {
 
 .tab {
   font-size: 20px;
-}
-
-.active-tab {
-  background-color: red;
+  text-decoration: none;
+  background-color: lightgrey;
 }
 
 .active-meal-section {
