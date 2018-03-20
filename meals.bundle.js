@@ -106,15 +106,32 @@
 	    _this.$ = _this.grabElements();
 	    _this.editing = null;
 	    _lodash2.default.bindAll(_this, 'prependFood', 'handleFilterKeyup', 'handleSubmitAddFood', 'handleClickDelete', 'handleClick', 'handleEditorKeydown');
+	    _this.sortOptions = {
+	      1: function sortByCaloriesAscending(list) {
+	        return list.sort(function (a, b) {
+	          return b.calories - a.calories;
+	        });
+	      },
+	      2: function sortByCaloriesDescending(list) {
+	        return list.sort(function (a, b) {
+	          return a.calories - b.calories;
+	        });
+	      },
+	      3: function sortById(list) {
+	        return list.sort(function (a, b) {
+	          return a.id - b.id;
+	        });
+	      }
+	    };
 	    return _this;
 	  }
 
 	  _createClass(FoodsHandler, [{
 	    key: 'populate',
-	    value: function populate() {
+	    value: function populate(option) {
 	      var _this2 = this;
 
-	      this.service.index().then(this.sortById).then(function (foods) {
+	      this.service.index().then(this.sortOptions[option]).then(function (foods) {
 	        return foods.forEach(_this2.prependFood);
 	      });
 	    }
@@ -247,13 +264,6 @@
 	      $tr.show();
 	      var name = $tr.find('td.name').text();
 	      alert(name + ' is part of this balanced breakfast!\nIt can\'t be deleted.');
-	    }
-	  }, {
-	    key: 'sortById',
-	    value: function sortById(list) {
-	      return list.sort(function (a, b) {
-	        return a.id - b.id;
-	      });
 	    }
 	  }, {
 	    key: 'grabElements',
@@ -28332,7 +28342,7 @@
 	    _this.service = new _mealsService2.default();
 	    _this.foodsHandler = new _foodsHandler2.default();
 	    _this.$ = _this.grabElements();
-	    _lodash2.default.bindAll(_this, 'populateMeal', 'fillTotalCaloriesTable', 'handleFilterKeyup', 'showTab', 'addFoodToMeal');
+	    _lodash2.default.bindAll(_this, 'populateMeal', 'fillTotalCaloriesTable', 'handleFilterKeyup', 'showTab', 'addFoodToMeal', 'sortFoodTable');
 	    _this.totals = {
 	      Breakfast: 0,
 	      Lunch: 0,
@@ -28351,6 +28361,7 @@
 	      3: "lunch",
 	      4: "dinner"
 	    };
+	    _this.clickCount = 0;
 	    return _this;
 	  }
 
@@ -28372,7 +28383,9 @@
 	  }, {
 	    key: 'populateFoodsTable',
 	    value: function populateFoodsTable() {
-	      this.foodsHandler.populate();
+	      var option = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 3;
+
+	      this.foodsHandler.populate(option);
 	    }
 	  }, {
 	    key: 'listen',
@@ -28381,6 +28394,21 @@
 	      this.$.tabs.click(this.showTab);
 	      this.$.newFood.click(this.goToFoodsPage);
 	      this.$.addMeal.click(this.addFoodToMeal);
+	      this.$.sortByCalories.click(this.sortFoodTable);
+	    }
+	  }, {
+	    key: 'sortFoodTable',
+	    value: function sortFoodTable() {
+	      this.clickCount++;
+	      this.populateFoodsTable(this.clickCount);
+	      this.resetClickCount();
+	    }
+	  }, {
+	    key: 'resetClickCount',
+	    value: function resetClickCount() {
+	      if (this.clickCount === 3) {
+	        this.clickCount = 0;
+	      }
 	    }
 	  }, {
 	    key: 'addFoodToMeal',
@@ -28493,7 +28521,8 @@
 	        tabs: (0, _jquery2.default)('.tab'),
 	        tables: (0, _jquery2.default)('.meal-table'),
 	        newFood: (0, _jquery2.default)('#new-food-button'),
-	        addMeal: (0, _jquery2.default)('.add-meal-button')
+	        addMeal: (0, _jquery2.default)('.add-meal-button'),
+	        sortByCalories: (0, _jquery2.default)('#sort-by-calories')
 	      };
 	    }
 	  }]);

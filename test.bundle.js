@@ -108,15 +108,32 @@
 	    _this.$ = _this.grabElements();
 	    _this.editing = null;
 	    _lodash2.default.bindAll(_this, 'prependFood', 'handleFilterKeyup', 'handleSubmitAddFood', 'handleClickDelete', 'handleClick', 'handleEditorKeydown');
+	    _this.sortOptions = {
+	      1: function sortByCaloriesAscending(list) {
+	        return list.sort(function (a, b) {
+	          return b.calories - a.calories;
+	        });
+	      },
+	      2: function sortByCaloriesDescending(list) {
+	        return list.sort(function (a, b) {
+	          return a.calories - b.calories;
+	        });
+	      },
+	      3: function sortById(list) {
+	        return list.sort(function (a, b) {
+	          return a.id - b.id;
+	        });
+	      }
+	    };
 	    return _this;
 	  }
 
 	  _createClass(FoodsHandler, [{
 	    key: 'populate',
-	    value: function populate() {
+	    value: function populate(option) {
 	      var _this2 = this;
 
-	      this.service.index().then(this.sortById).then(function (foods) {
+	      this.service.index().then(this.sortOptions[option]).then(function (foods) {
 	        return foods.forEach(_this2.prependFood);
 	      });
 	    }
@@ -249,13 +266,6 @@
 	      $tr.show();
 	      var name = $tr.find('td.name').text();
 	      alert(name + ' is part of this balanced breakfast!\nIt can\'t be deleted.');
-	    }
-	  }, {
-	    key: 'sortById',
-	    value: function sortById(list) {
-	      return list.sort(function (a, b) {
-	        return a.id - b.id;
-	      });
 	    }
 	  }, {
 	    key: 'grabElements',
