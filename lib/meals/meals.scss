@@ -5,10 +5,11 @@ th{
   padding: 20px;
   border-bottom: 1px solid #ccc;
 }
-caption{
+caption, .foods thead, h2{
   font-size: 24px;
   padding: 20px;
   border: 1px solid #ccc;
+  background-color: lightgrey;
 }
 
 .negative-calories {
@@ -27,6 +28,7 @@ caption{
 .tabs {
   overflow: hidden;
   border: 1px solid #ccc;
+  background-color: lightgrey;
 }
 
 .tabs button {
@@ -38,7 +40,7 @@ caption{
   padding: 14px 16px;
   transition: 0.3s;
   &:hover{
-    background-color: #ddd;
+    background-color: darkgrey;
   }
 }
 
