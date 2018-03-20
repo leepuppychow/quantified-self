@@ -5,7 +5,7 @@ th{
   padding: 20px;
   border-bottom: 1px solid #ccc;
 }
-caption, .foods thead, h2{
+h2, caption, .foods thead {
   font-size: 24px;
   padding: 20px;
   border: 1px solid #ccc;
@@ -61,6 +61,8 @@ caption, .foods thead, h2{
 
 .meal-button, #new-food-button{
   width: 30%;
+  font-size: 14px;
+  margin: 5px;
 }
 
 .totals{
