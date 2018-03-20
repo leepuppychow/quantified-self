@@ -55,3 +55,12 @@ h2 { font-size: 2rem }
   line-height: 1.5em;
   font-style: italic;
 }
+.flex-row-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.flex-column-container {
+  display: flex;
+  flex-direction: column;
+}

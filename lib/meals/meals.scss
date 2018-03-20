@@ -1,4 +1,4 @@
-// @import "../shared/main";
+@import "../shared/main";
 
 .negative-calories {
   color: red;
@@ -6,4 +6,12 @@
 
 .positive-calories {
   color: green;
+}
+
+.meal-table {
+  display: none;
+}
+
+#breakfast {
+  display: block;
 }
