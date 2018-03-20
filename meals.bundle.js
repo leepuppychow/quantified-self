@@ -143,16 +143,12 @@
 	          name = _ref.name,
 	          calories = _ref.calories;
 
-<<<<<<< HEAD
-	      return '\n      <tr data-id="' + id + '">\n        <td class="data name" data-field="name">' + name + '</td>\n        <td class="data" data-field="calories">' + calories + '</td>\n        <td>\n          <button class="delete">x</button>\n        </td>\n      </tr>\n    ';
+	      return '\n      <tr data-id="' + id + '">\n        <td class="check-box"><input class="food-checkbox" data-food-id="' + id + '" type="checkbox"></td>\n        <td class="data name" data-field="name">' + name + '</td>\n        <td class="data" data-field="calories">' + calories + '</td>\n        <td>\n          <button class="delete">x</button>\n        </td>\n      </tr>\n    ';
 	    }
 	  }, {
 	    key: 'prependFood',
 	    value: function prependFood(food) {
 	      this.$.data.prepend(this.renderFood(food));
-=======
-	      this.$.data.prepend('\n      <tr data-id="' + id + '">\n        <td class="check-box"><input class="food-checkbox" data-food-id="' + id + '" type="checkbox"></td>\n        <td class="data name" data-field="name">' + name + '</td>\n        <td class="data" data-field="calories">' + calories + '</td>\n        <td>\n          <button class="delete">x</button>\n        </td>\n      </tr>\n    ');
->>>>>>> Adds food to meals almost working; need to have meal tabs refresh after POST
 	    }
 	  }, {
 	    key: 'handleSubmitAddFood',
@@ -28414,16 +28410,8 @@
 	          _id = _ref.id;
 
 	      foods.forEach(function (food) {
-<<<<<<< HEAD
-	        _this3.totals[name] += food.calories;
-<<<<<<< HEAD
-	        (0, _jquery2.default)('.' + name.toLowerCase() + ' tbody').prepend('\n        <tr>\n          <th>' + food.name + '</th>\n          <th>' + food.calories + '</th>\n        </tr>\n      ');
-=======
-=======
 	        _this4.totals[name] += food.calories;
->>>>>>> Adds food to meals almost working; need to have meal tabs refresh after POST
-	        (0, _jquery2.default)('#' + name.toLowerCase() + ' tbody').prepend('\n        <tr>\n          <td>' + food.name + '</td>\n          <td>' + food.calories + '</td>\n        </tr>\n        ');
->>>>>>> Fixes bug with foods not showing up on meals table
+	        (0, _jquery2.default)('#' + name.toLowerCase() + ' tbody').prepend('\n        <tr>\n          <td>' + food.name + '</td>\n          <td>' + food.calories + '</td>\n        </tr>\n      ');
 	      });
 	      this.showTotalCalories(name, this.totals[name]);
 	      this.showRemainingCalories(name, this.totals[name]);
