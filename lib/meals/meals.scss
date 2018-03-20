@@ -52,6 +52,14 @@ h2, caption, .foods thead {
   background-color: red;
 }
 
+.active-meal-section {
+  display: inline-table;
+}
+
+#breakfast{
+  display: inline-table;
+}
+
 .meal-table {
   width: 100%;
   display: none;
@@ -59,7 +67,7 @@ h2, caption, .foods thead {
   border: 1px solid #ccc;
 }
 
-.meal-button, #new-food-button{
+.add-meal-button, #new-food-button{
   width: 30%;
   font-size: 14px;
   margin: 5px;
@@ -70,8 +78,4 @@ h2, caption, .foods thead {
   width: 100%;
   padding: 6px 12px;
   border: 1px solid #ccc;
-}
-
-#breakfast{
-  display: inline-table;
 }

@@ -125,12 +125,12 @@
         <h3>Add Food To:</h3>
         <br>
         <div>
-          <button type="button" class="meal-button">Breakfast</button>
-          <button type="button" class="meal-button">Lunch</button>
+          <button type="button" data-meal-id="1" class="add-meal-button">Breakfast</button>
+          <button type="button" data-meal-id="3" class="add-meal-button">Lunch</button>
         </div>
         <div>
-          <button type="button" class="meal-button">Dinner</button>
-          <button type="button" class="meal-button">Snack</button>
+          <button type="button" data-meal-id="4" class="add-meal-button">Dinner</button>
+          <button type="button" data-meal-id="2" class="add-meal-button">Snack</button>
         </div>
         <br>
         <form class="search-food">
@@ -141,6 +141,7 @@
         <table class="foods">
           <thead>
             <tr>
+              <th></th>
               <th>Name</th>
               <th>Calories</th>
               <th></th>
