@@ -15,87 +15,8 @@
   <main>
     <div class="flex-row-container">
       <div class="meals-section">
-        <div class="tabs">
-          <button class="tab" data-meal="breakfast" type="button">Breakfast</button>
-          <button class="tab" data-meal="lunch" type="button">Lunch</button>
-          <button class="tab" data-meal="dinner" type="button">Dinner</button>
-          <button class="tab" data-meal="snack" type="button">Snacks</button>
-        </div>
-
-        <table class="meal-table" id="breakfast">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Calories</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Total Calories</td>
-              <td id="breakfast-total-calories"></td>
-            </tr>
-            <tr>
-              <td>Remaining Calories</td>
-              <td id="breakfast-remaining-calories"></td>
-            </tr>
-          </tbody>
-        </table>
-
-        <table class="meal-table" id="lunch">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Calories</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Total Calories</td>
-              <td id="lunch-total-calories"></td>
-            </tr>
-            <tr>
-              <td>Remaining Calories</td>
-              <td id="lunch-remaining-calories"></td>
-            </tr>
-          </tbody>
-        </table>
-
-        <table class="meal-table" id="dinner">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Calories</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Total Calories</td>
-              <td id="dinner-total-calories"></td>
-            </tr>
-            <tr>
-              <td>Remaining Calories</td>
-              <td id="dinner-remaining-calories"></td>
-            </tr>
-          </tbody>
-        </table>
-        <table class="meal-table" id="snack">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Calories</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Total Calories</td>
-              <td id="snack-total-calories"></td>
-            </tr>
-            <tr>
-              <td>Remaining Calories</td>
-              <td id="snack-remaining-calories"></td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="tabs" />
+        <div class="tables" />
 
         <table class="totals">
           <caption>Totals</caption>
@@ -125,14 +46,7 @@
         <br>
         <h3>Add Food To:</h3>
         <br>
-        <div>
-          <button type="button" data-meal-id="1" class="add-meal-button">Breakfast</button>
-          <button type="button" data-meal-id="3" class="add-meal-button">Lunch</button>
-        </div>
-        <div>
-          <button type="button" data-meal-id="4" class="add-meal-button">Dinner</button>
-          <button type="button" data-meal-id="2" class="add-meal-button">Snack</button>
-        </div>
+          <!-- add to food buttons -->
         <br>
         <form class="search-food">
           <label>Search by Food Name:
