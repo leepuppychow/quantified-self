@@ -121,6 +121,7 @@ button, a {
     background-color: transparent;
     border: none;
     color: $warning;
+    padding: 0;
   }
 }
 
@@ -139,7 +140,7 @@ body {
       th { flex: 1 }
       td {
         flex: 1;
-        padding: 1em;
+        padding: 1em 0;
       }
     }
     tbody tr {
