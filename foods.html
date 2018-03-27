@@ -1,44 +1,43 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <title>Quantified Self - Manage Foods</title>
 </head>
 <body>
   <header>
-    <h1>Quantified Self</h1>
-    <a href="foods.html">foods</a>
     <a href=".">meals</a>
+    <h1>Quantified😊Self</h1>
+    <a href="foods.html">foods</a>
   </header>
   <main>
-    <form class="add-food">
-      <h2>Add New Food</h2>
-      <input name="name" placeholder="name">
-      <input name="calories" placeholder="calories" type="number" min="0">
-      <button type="submit">Add Food</button>
-      <p class="errors" />
-    </form>
-    <table class="foods">
-      <thead>
-        <tr>
-          <th>
-            <h2>Name</h2>
-          </th>
-          <th><h2>Calories</h2></th>
-        </tr>
-        <tr>
-          <th>
-            <form class="filter">
-              <label>Filter by Name
-                <input name="filter" autofocus />
-              </label>
-            </form>
-          </th>
-        </tr>
-      </thead>
-      <tbody />
-    </table>
-    <script src="foods.bundle.js"></script>
+    <div class="left side">
+      <table class="foods">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Calories</th>
+            <th>&nbsp;</th>
+          </tr>
+        </thead>
+        <tbody />
+      </table>
+    </div>
+    <div class="right side">
+      <form class="filter">
+        <label>Filter by Name
+          <input type="text"  name="filter" autofocus />
+        </label>
+      </form>
+      <form class="add-food">
+        <button type="submit"><h3>Add New Food</h3></button>
+        <input type="text" name="name" placeholder="name">
+        <hr>
+        <input type="text"  name="calories" placeholder="calories" type="number" min="0">
+        <p class="errors" />
+      </form>
+    </div>
   </main>
 </body>
+<script src="foods.bundle.js"></script>
 </html>

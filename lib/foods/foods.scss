@@ -1,21 +1,29 @@
 @import "../shared/main";
 
-.add-food {
-  position: fixed;
-  right: 10%;
-  top: 40%;
+tr {
+  text-align: left;
+  *:last-child {
+    flex: 0.2;
+    order: -1;
+  }
+}
+
+form {
+  @include border;
+  background-color: $alt1;
   display: flex;
   flex-direction: column;
-  border: 1px solid black;
-  background-color: #EEF;
-  > * {
-    margin: 5px 20px;
+  align-items: center;
+  justify-content: space-between;
+  >* {
+    margin: 0% !important;
+    width: 80%;
   }
 }
 .filter {
   background-color: none;
-}
+ }
 
-.check-box{
+.check-box {
   display: none;
 }
