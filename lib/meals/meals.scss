@@ -19,6 +19,10 @@
   }
 }
 
+.meal-table:not(.active) {
+  display: none;
+}
+
 //
 // .totals{
 //   margin-top: 40px;

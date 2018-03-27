@@ -72,15 +72,11 @@ body {
 
   .side {
     margin: 3%;
-    &.left {
-      flex: 60%;
-    }
+    >* { width: 100% }
+    &.left { flex: 60% }
     &.right {
       flex: 40%;
       margin-left: 0;
-    }
-    >* {
-      width: 100%;
     }
   }
 
@@ -98,7 +94,7 @@ button, a, input {
     outline: none;
     border: 4px outset $focus;
   }
-  &.tab, &[type="checkbox"] {
+  &[type="checkbox"] {
     border: none;
     border-radius: 0;
     &:focus {
@@ -130,6 +126,7 @@ button, a {
 
 body {
   table {
+    width: 100%;
     border-collapse: collapse;
     @include border;
     background-color: $alt1;
