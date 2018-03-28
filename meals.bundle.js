@@ -46,17 +46,19 @@
 
 	'use strict';
 
-	var _mealsHandler = __webpack_require__(13);
+	var _mealsHandler = __webpack_require__(15);
 
 	var _mealsHandler2 = _interopRequireDefault(_mealsHandler);
 
-	__webpack_require__(15);
+	var _attachHandler = __webpack_require__(9);
+
+	var _attachHandler2 = _interopRequireDefault(_attachHandler);
+
+	__webpack_require__(18);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var handler = new _mealsHandler2.default();
-	handler.populate();
-	handler.listen();
+	(0, _attachHandler2.default)(_mealsHandler2.default);
 
 /***/ }),
 /* 1 */
@@ -86,7 +88,13 @@
 
 	var _foodsService2 = _interopRequireDefault(_foodsService);
 
+	var _foodModel = __webpack_require__(8);
+
+	var _foodModel2 = _interopRequireDefault(_foodModel);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -103,37 +111,52 @@
 	    var _this = _possibleConstructorReturn(this, (FoodsHandler.__proto__ || Object.getPrototypeOf(FoodsHandler)).call(this));
 
 	    _this.service = new _foodsService2.default();
+	    _this.foods = new Map();
 	    _this.$ = _this.grabElements();
 	    _this.editing = null;
-	    _lodash2.default.bindAll(_this, 'prependFood', 'handleFilterKeyup', 'handleSubmitAddFood', 'handleClickDelete', 'handleClick', 'handleEditorKeydown');
-	    _this.sortOptions = {
-	      1: function sortByCaloriesAscending(list) {
-	        return list.sort(function (a, b) {
-	          return b.calories - a.calories;
-	        });
-	      },
-	      2: function sortByCaloriesDescending(list) {
-	        return list.sort(function (a, b) {
-	          return a.calories - b.calories;
-	        });
-	      },
-	      3: function sortById(list) {
-	        return list.sort(function (a, b) {
-	          return a.id - b.id;
-	        });
-	      }
-	    };
+	    _lodash2.default.bindAll(_this, 'handleFilterKeyup', 'handleSubmitAddFood', 'handleClickDelete', 'handleClick', 'handleEditorKeydown', 'addFood', 'reorderFoods');
 	    return _this;
 	  }
 
 	  _createClass(FoodsHandler, [{
+	    key: 'nextSort',
+	    value: function nextSort() {
+	      var options = _foodModel2.default.sortOptions = {
+	        0: function _(a, b) {
+	          return a.id - b.id;
+	        },
+	        1: function _(a, b) {
+	          return b.calories - a.calories;
+	        },
+	        2: function _(a, b) {
+	          return a.calories - b.calories;
+	        }
+	      };
+	    }
+	  }, {
 	    key: 'populate',
-	    value: function populate(option) {
+	    value: function populate() {
 	      var _this2 = this;
 
-	      this.service.index().then(this.sortOptions[option]).then(function (foods) {
-	        return foods.forEach(_this2.prependFood);
+	      this.service.index().then(function (foods) {
+	        return foods.forEach(_this2.addFood);
 	      });
+	    }
+	  }, {
+	    key: 'reorderFoods',
+	    value: function reorderFoods(option) {
+	      var sorted = [].concat(_toConsumableArray(this.foods.values())).sort(this.sortOptions[option]);
+	      var newContents = sorted.map(function (food) {
+	        return food.render();
+	      });
+	      this.$.data.html(newContents);
+	    }
+	  }, {
+	    key: 'addFood',
+	    value: function addFood(food) {
+	      var wrapped = new _foodModel2.default(food);
+	      this.foods.set(food.id, wrapped);
+	      this.$.data.prepend(wrapped.render());
 	    }
 	  }, {
 	    key: 'listen',
@@ -154,51 +177,58 @@
 	      });
 	    }
 	  }, {
-	    key: 'renderFood',
-	    value: function renderFood(_ref) {
-	      var id = _ref.id,
-	          name = _ref.name,
-	          calories = _ref.calories;
-
-	      return '\n      <tr data-id="' + id + '">\n        <td class="check-box"><input class="food-checkbox" data-food-id="' + id + '" type="checkbox"></td>\n        <td class="data name" data-field="name">' + name + '</td>\n        <td class="data" data-field="calories">' + calories + '</td>\n        <td>\n          <button class="delete">x</button>\n        </td>\n      </tr>\n    ';
-	    }
-	  }, {
-	    key: 'prependFood',
-	    value: function prependFood(food) {
-	      this.$.data.prepend(this.renderFood(food));
-	    }
-	  }, {
 	    key: 'handleSubmitAddFood',
 	    value: function handleSubmitAddFood(event) {
 	      event.preventDefault();
-	      var _$2 = this.$,
-	          errors = _$2.errors,
-	          inputs = _$2.inputs;
+	      this.submitFood({
+	        name: this.$.inputs.name.val(),
+	        calories: this.$.inputs.calories.val()
+	      });
+	    }
+	  }, {
+	    key: 'submitFood',
+	    value: function submitFood(_ref) {
+	      var _this3 = this;
 
-	      var food = {
-	        name: inputs.name.val(),
-	        calories: inputs.calories.val()
-	      };
+	      var name = _ref.name,
+	          calories = _ref.calories;
+
 	      var errorText = '';
-	      if (!food.name) errorText += '<p>Please enter a food name</p>';
-	      if (!food.calories) errorText += '<p>Please enter a calorie amount</p>';
-	      errors.html(errorText);
-	      if (!errorText.length) {
-	        this.service.create(food).then(this.prependFood);
-	        inputs.name.val('');
-	        inputs.calories.val('');
-	      }
+	      if (!name) errorText += '<p>Please enter a food name</p>';
+	      if (!calories) errorText += '<p>Please enter a calorie amount</p>';
+	      if (errorText) return this.$.errors.html(errorText);
+	      this.service.create({ name: name, calories: calories }).then(function (food) {
+	        _this3.addFood(food);
+	        _this3.$.inputs.name.val('');
+	        _this3.$.inputs.calories.val('');
+	      });
 	    }
 	  }, {
 	    key: 'handleClickDelete',
 	    value: function handleClickDelete(event) {
-	      var _this3 = this;
+	      var _this4 = this;
 
 	      var $tr = (0, _jquery2.default)(event.currentTarget.closest('tr'));
+	      var foodID = $tr.data('id');
 	      $tr.hide();
-	      this.service.destroy($tr.data('id')).then($tr.remove).catch(function () {
-	        return _this3.restoreData($tr);
+	      this.service.destroy(foodID).then(function () {
+	        return _this4.removeFood(foodID, $tr);
+	      }).catch(function () {
+	        return _this4.restoreData($tr);
 	      });
+	    }
+	  }, {
+	    key: 'removeFood',
+	    value: function removeFood(foodID, $tr) {
+	      this.foods.delete(foodID);
+	      $tr.remove();
+	    }
+	  }, {
+	    key: 'restoreData',
+	    value: function restoreData($tr) {
+	      $tr.show();
+	      var name = $tr.find('td.name').text();
+	      alert(name + ' is part of this balanced breakfast!\nIt can\'t be deleted.');
 	    }
 	  }, {
 	    key: 'handleClick',
@@ -210,14 +240,6 @@
 	      if ($target.hasClass('data')) this.startEdit($target);
 	    }
 	  }, {
-	    key: 'handleEditorKeydown',
-	    value: function handleEditorKeydown(_ref3) {
-	      var key = _ref3.key;
-
-	      if (key === "Enter") this.submitEdit();
-	      if (key === "Escape") this.cancelEdit();
-	    }
-	  }, {
 	    key: 'startEdit',
 	    value: function startEdit($td) {
 	      var field = $td.data('field');
@@ -227,6 +249,14 @@
 	      $td.replaceWith($input);
 	      $input.focus();
 	      this.editing = { $td: $td, $input: $input, field: field };
+	    }
+	  }, {
+	    key: 'handleEditorKeydown',
+	    value: function handleEditorKeydown(_ref3) {
+	      var key = _ref3.key;
+
+	      if (key === "Enter") this.submitEdit();
+	      if (key === "Escape") this.cancelEdit();
 	    }
 	  }, {
 	    key: 'cancelEdit',
@@ -257,28 +287,6 @@
 	          return $td.text(oldValue);
 	        });
 	      }
-	    }
-	  }, {
-	    key: 'restoreData',
-	    value: function restoreData($tr) {
-	      $tr.show();
-	      var name = $tr.find('td.name').text();
-	      alert(name + ' is part of this balanced breakfast!\nIt can\'t be deleted.');
-	    }
-	  }, {
-	    key: 'grabElements',
-	    value: function grabElements() {
-	      return {
-	        body: (0, _jquery2.default)(document.body),
-	        addFood: (0, _jquery2.default)('form.add-food'),
-	        data: (0, _jquery2.default)('table.foods tbody'),
-	        errors: (0, _jquery2.default)('.errors'),
-	        inputs: {
-	          name: (0, _jquery2.default)('form input[name="name"]'),
-	          calories: (0, _jquery2.default)('form input[name="calories"]'),
-	          filter: (0, _jquery2.default)('form input[name="filter"]')
-	        }
-	      };
 	    }
 	  }]);
 
@@ -27811,6 +27819,26 @@
 	        (0, _jquery2.default)(td).closest('tr').toggle(isMatch);
 	      });
 	    }
+	  }, {
+	    key: 'grabElements',
+	    value: function grabElements() {
+	      return {
+	        body: (0, _jquery2.default)(document.body),
+	        inputs: {
+	          name: (0, _jquery2.default)('form input[name="name"]'),
+	          calories: (0, _jquery2.default)('form input[name="calories"]'),
+	          filter: (0, _jquery2.default)('form input[name="filter"]')
+	        },
+	        addFood: (0, _jquery2.default)('form.add-food'),
+	        data: (0, _jquery2.default)('table.foods tbody'),
+	        errors: (0, _jquery2.default)('.errors'),
+	        tabs: (0, _jquery2.default)('.tab'),
+	        tables: (0, _jquery2.default)('.meal-table'),
+	        newFood: (0, _jquery2.default)('#new-food-button'),
+	        addMeal: (0, _jquery2.default)('.add-meal-button'),
+	        sortByCalories: (0, _jquery2.default)('#sort-by-calories')
+	      };
+	    }
 	  }]);
 
 	  return Handler;
@@ -27968,9 +27996,74 @@
 	exports.default = Service;
 
 /***/ }),
-/* 8 */,
-/* 9 */,
-/* 10 */
+/* 8 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Food = function () {
+	  function Food(_ref) {
+	    var id = _ref.id,
+	        name = _ref.name,
+	        calories = _ref.calories;
+
+	    _classCallCheck(this, Food);
+
+	    this.id = id;
+	    this.name = name;
+	    this.calories = calories;
+	  }
+
+	  _createClass(Food, [{
+	    key: 'renderCheckBox',
+	    value: function renderCheckBox() {
+	      !Food.onMealPage ? '' : '<td><input type="checkbox"></td>';
+	    }
+	  }, {
+	    key: 'renderDeleteButton',
+	    value: function renderDeleteButton() {
+	      Food.onMealPage ? '' : '<td><button class="delete">x</button></td>';
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return '\n      <tr data-id="' + this.id + '">\n        ' + this.renderCheckBox() + '\n        <td class="data name" data-field="name">' + this.name + '</td>\n        <td class="data" data-field="calories">' + this.calories + '</td>\n        ' + this.renderDeleteButton() + '\n      </tr>\n    ';
+	    }
+	  }]);
+
+	  return Food;
+	}();
+
+	exports.default = Food;
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	exports.default = function (Handler) {
+	  var handler = new Handler(document);
+	  handler.populate();
+	  handler.listen();
+	};
+
+/***/ }),
+/* 10 */,
+/* 11 */,
+/* 12 */
 /***/ (function(module, exports) {
 
 	/*
@@ -28026,10 +28119,10 @@
 
 
 /***/ }),
-/* 11 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(10)();
+	exports = module.exports = __webpack_require__(12)();
 	// imports
 
 
@@ -28040,7 +28133,7 @@
 
 
 /***/ }),
-/* 12 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/*
@@ -28292,7 +28385,7 @@
 
 
 /***/ }),
-/* 13 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28315,13 +28408,17 @@
 
 	var _handler2 = _interopRequireDefault(_handler);
 
-	var _mealsService = __webpack_require__(14);
+	var _mealsService = __webpack_require__(16);
 
 	var _mealsService2 = _interopRequireDefault(_mealsService);
 
 	var _foodsHandler = __webpack_require__(1);
 
 	var _foodsHandler2 = _interopRequireDefault(_foodsHandler);
+
+	var _mealModel = __webpack_require__(17);
+
+	var _mealModel2 = _interopRequireDefault(_mealModel);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -28343,18 +28440,7 @@
 	    _this.foodsHandler = new _foodsHandler2.default();
 	    _this.$ = _this.grabElements();
 	    _lodash2.default.bindAll(_this, 'populateMeal', 'fillTotalCaloriesTable', 'handleFilterKeyup', 'showTab', 'addFoodToMeal', 'sortFoodTable');
-	    _this.totals = {
-	      Breakfast: 0,
-	      Lunch: 0,
-	      Dinner: 0,
-	      Snack: 0
-	    };
-	    _this.goalCaloriesPerMeal = {
-	      Breakfast: 400,
-	      Snack: 200,
-	      Lunch: 600,
-	      Dinner: 800
-	    };
+	    _this.meals = new Map();
 	    _this.mealList = {
 	      1: "breakfast",
 	      2: "snack",
@@ -28362,18 +28448,23 @@
 	      4: "dinner"
 	    };
 	    _this.clickCount = 0;
+	    _this.calorieTotals = {
+	      goal: 0,
+	      consumed: 0,
+	      remaining: 0
+	    };
 	    return _this;
 	  }
 
 	  _createClass(MealsHandler, [{
 	    key: 'populate',
 	    value: function populate() {
-	      this.populateFoodsInEachMeal();
-	      this.populateFoodsTable();
+	      this.populateAllMeals();
+	      this.foodsHandler.populate();
 	    }
 	  }, {
-	    key: 'populateFoodsInEachMeal',
-	    value: function populateFoodsInEachMeal() {
+	    key: 'populateAllMeals',
+	    value: function populateAllMeals() {
 	      var _this2 = this;
 
 	      return this.service.index().then(function (meals) {
@@ -28381,11 +28472,9 @@
 	      }).then(this.fillTotalCaloriesTable);
 	    }
 	  }, {
-	    key: 'populateFoodsTable',
-	    value: function populateFoodsTable() {
-	      var option = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 3;
-
-	      this.foodsHandler.populate(option);
+	    key: 'populateMeal',
+	    value: function populateMeal(meal) {
+	      this.meals.set(meal.id, new _mealModel2.default(meal));
 	    }
 	  }, {
 	    key: 'listen',
@@ -28399,16 +28488,7 @@
 	  }, {
 	    key: 'sortFoodTable',
 	    value: function sortFoodTable() {
-	      this.clickCount++;
-	      this.populateFoodsTable(this.clickCount);
-	      this.resetClickCount();
-	    }
-	  }, {
-	    key: 'resetClickCount',
-	    value: function resetClickCount() {
-	      if (this.clickCount === 3) {
-	        this.clickCount = 0;
-	      }
+	      this.foodsHandler.reorderFoods(++this.clickCount % 3);
 	    }
 	  }, {
 	    key: 'addFoodToMeal',
@@ -28417,13 +28497,13 @@
 
 	      event.preventDefault();
 	      var mealID = (0, _jquery2.default)(event.target).data("meal-id");
-	      var checkedFoods = (0, _jquery2.default)('.food-checkbox:checked');
+	      var checkedFoods = (0, _jquery2.default)(':checked');
 	      var completed = _jquery2.default.map(checkedFoods, function (food) {
 	        var foodID = (0, _jquery2.default)(food).data("food-id");
 	        return _this3.service.addFood(mealID, foodID);
 	      });
 	      Promise.all(completed).finally(function () {
-	        return _this3.populateFoodsInEachMeal();
+	        return _this3.populateAllMeals();
 	      }).then(function () {
 	        return _this3.switchToAppropriateMealTab(mealID);
 	      }).then(function () {
@@ -28457,22 +28537,6 @@
 	      });
 	    }
 	  }, {
-	    key: 'populateMeal',
-	    value: function populateMeal(_ref) {
-	      var _this4 = this;
-
-	      var name = _ref.name,
-	          foods = _ref.foods,
-	          _id = _ref.id;
-
-	      foods.forEach(function (food) {
-	        _this4.totals[name] += food.calories;
-	        (0, _jquery2.default)('#' + name.toLowerCase() + ' tbody').prepend('\n        <tr>\n          <td>' + food.name + '</td>\n          <td>' + food.calories + '</td>\n        </tr>\n      ');
-	      });
-	      this.showTotalCalories(name, this.totals[name]);
-	      this.showRemainingCalories(name, this.totals[name]);
-	    }
-	  }, {
 	    key: 'showTotalCalories',
 	    value: function showTotalCalories(meal, totalCalories) {
 	      (0, _jquery2.default)('#' + meal.toLowerCase() + '-total-calories').html(totalCalories);
@@ -28480,51 +28544,38 @@
 	  }, {
 	    key: 'showRemainingCalories',
 	    value: function showRemainingCalories(meal, totalCalories) {
-	      var remainingCalories = this.goalCaloriesPerMeal[meal] - totalCalories;
+	      var remainingCalories = _mealModel2.default.targets[meal] - totalCalories;
 	      var mealRemainingCalories = (0, _jquery2.default)('#' + meal.toLowerCase() + '-remaining-calories');
 	      mealRemainingCalories.html(remainingCalories);
-	      this.addRemainingCaloriesStyle(remainingCalories, mealRemainingCalories);
+	      // this.addRemainingCaloriesStyle(remainingCalories, mealRemainingCalories)
 	    }
 	  }, {
 	    key: 'fillTotalCaloriesTable',
 	    value: function fillTotalCaloriesTable() {
-	      var totalGoal = this.sumCalories(this.goalCaloriesPerMeal);
-	      var totalConsumed = this.sumCalories(this.totals);
-	      var totalRemaining = totalGoal - totalConsumed;
-	      (0, _jquery2.default)("#total-calories-goal").html(totalGoal);
-	      (0, _jquery2.default)("#total-calories-consumed").html(totalConsumed);
-	      (0, _jquery2.default)("#total-calories-remaining").html(totalRemaining);
-	      this.addRemainingCaloriesStyle(totalRemaining, (0, _jquery2.default)("#total-calories-remaining"));
+	      var calorieTotals = this.sumCalories();
+	      for (field in this.totals) {
+	        (0, _jquery2.default)('#total-calories-' + field).html(this.calorieTotals[field]);
+	      }
+	      // this.addRemainingCaloriesStyle(totalRemaining, $("#total-calories-remaining"))
 	    }
 	  }, {
 	    key: 'sumCalories',
 	    value: function sumCalories(object) {
-	      return Object.values(object).reduce(function (sum, meal) {
-	        return sum += meal;
+	      var _this4 = this;
+
+	      this.meals.forEach(function (meal) {
+	        for (field in _this4.totals) {
+	          _this4.totals[field] += meal.calories[field];
+	        }
 	      });
 	    }
-	  }, {
-	    key: 'addRemainingCaloriesStyle',
-	    value: function addRemainingCaloriesStyle(calories, element) {
-	      element.addClass(calories >= 0 ? 'positive-calories' : 'negative-calories');
-	    }
-	  }, {
-	    key: 'grabElements',
-	    value: function grabElements() {
-	      return {
-	        body: (0, _jquery2.default)(document.body),
-	        inputs: {
-	          name: (0, _jquery2.default)('form input[name="name"]'),
-	          calories: (0, _jquery2.default)('form input[name="calories"]'),
-	          filter: (0, _jquery2.default)('form input[name="filter"]')
-	        },
-	        tabs: (0, _jquery2.default)('.tab'),
-	        tables: (0, _jquery2.default)('.meal-table'),
-	        newFood: (0, _jquery2.default)('#new-food-button'),
-	        addMeal: (0, _jquery2.default)('.add-meal-button'),
-	        sortByCalories: (0, _jquery2.default)('#sort-by-calories')
-	      };
-	    }
+
+	    // addRemainingCaloriesStyle(calories, element) {
+	    //   element.addClass(calories >= 0 ?
+	    //                   'positive-calories':
+	    //                   'negative-calories')
+	    // }
+
 	  }]);
 
 	  return MealsHandler;
@@ -28533,7 +28584,7 @@
 	exports.default = MealsHandler;
 
 /***/ }),
-/* 14 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28593,16 +28644,103 @@
 	exports.default = MealsService;
 
 /***/ }),
-/* 15 */
+/* 17 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Meal = function () {
+	  function Meal(_ref) {
+	    var id = _ref.id,
+	        name = _ref.name,
+	        foods = _ref.foods;
+
+	    _classCallCheck(this, Meal);
+
+	    this.id = id;
+	    this.name = name;
+	    this.foods = foods;
+	    this.calculateCalories();
+	  }
+
+	  _createClass(Meal, [{
+	    key: 'calculateCalories',
+	    value: function calculateCalories() {
+	      var goal = Meal.goals[this.name];
+	      var consumed = this.foods.reduce(function (sum, food) {
+	        return sum + food.calories;
+	      }, 0);
+	      var remaining = goal - consumed;
+	      this.calories = { goal: goal, consumed: consumed, remaining: remaining };
+	    }
+	  }, {
+	    key: 'sign',
+	    value: function sign(calories) {
+	      calories < 0 ? 'negative' : 'positive';
+	    }
+	  }, {
+	    key: 'renderTab',
+	    value: function renderTab() {
+	      '<button class="tab" data-id="' + this.id + '">' + this.name + '</button>';
+	    }
+	  }, {
+	    key: 'renderTable',
+	    value: function renderTable() {
+	      '\n      <table class="meal-table" data-id="' + this.id + '">\n        <thead>\n          <tr>\n            <th>Name</th>\n            <th>Calories</th>\n          </tr>\n        </thead>\n        <tbody>\n\n        </tbody>\n      </table>\n    ';
+	    }
+	  }, {
+	    key: 'renderTableBody',
+	    value: function renderTableBody() {
+	      var _calories = this.calories,
+	          remaining = _calories.remaining,
+	          consumed = _calories.consumed;
+
+	      return '\n      <tbody>\n        ' + this.foods.map(renderMealFood) + '\n        <tr>\n          <td>Total Calories</td>\n          <td class="total-calories">' + consumed + '</td>\n        </tr>\n        <tr>\n          <td>Remaining Calories</td>\n          <td class="' + this.sign(remaining) + '">' + remaining + '</td>\n        </tr>\n      </tbody>\n    ';
+	      // <td id="breakfast-remaining-calories">${remaining}</td>
+	    }
+	  }, {
+	    key: 'renderMealFood',
+	    value: function renderMealFood(food) {
+	      return '\n      <tr>\n        <td>' + food.name + '</td>\n        <td>' + food.calories + '</td>\n      </tr>\n    ';
+	    }
+	  }, {
+	    key: 'renderAddToMealButton',
+	    value: function renderAddToMealButton() {
+	      '<button data-id="' + this.id + '" class="add-meal-button">' + this.name + '</button>';
+	    }
+	  }]);
+
+	  return Meal;
+	}();
+
+	Meal.goals = {
+	  Breakfast: 400,
+	  Snack: 200,
+	  Lunch: 600,
+	  Dinner: 800
+	};
+
+	exports.default = Meal;
+
+/***/ }),
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(16);
+	var content = __webpack_require__(19);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(12)(content, {});
+	var update = __webpack_require__(14)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -28619,12 +28757,12 @@
 	}
 
 /***/ }),
-/* 16 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(10)();
+	exports = module.exports = __webpack_require__(12)();
 	// imports
-	exports.i(__webpack_require__(11), "");
+	exports.i(__webpack_require__(13), "");
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Roboto);", ""]);
 
 	// module

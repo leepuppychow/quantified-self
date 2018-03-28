@@ -1,77 +1,31 @@
 @import "../shared/main";
 
-th{
-  font-size: 24px;
-  padding: 20px;
-  border-bottom: 1px solid #ccc;
-}
-h2, caption, .foods thead {
-  font-size: 24px;
-  padding: 20px;
-  border: 1px solid #ccc;
-  background-color: lightgrey;
-}
+// caption, .foods thead {
+//   @include subheader;
+//   background-color: lightgrey;
+// }
 
-.negative-calories {
-  color: red;
-}
-
-.positive-calories {
-  color: green;
-}
-
-.meals-section, .foods {
-  width: 100%;
-  margin-right: 10%;
-}
-
-.tabs {
-  overflow: hidden;
-  border: 1px solid #ccc;
-  background-color: lightgrey;
-}
-
-.tabs button {
-  float: left;
-  border: none;
+.negative { color: red }
+.positive { color: green }
+.tab {
+  @include subheader;
   outline: none;
-  cursor: pointer;
-  padding: 14px 16px;
-  &:hover{
-    background-color: darkgrey;
+  float: left;
+  border-radius: 0;
+  &.active {
+    background-color: black;
+    color: white;
+    font-weight: bold;
   }
 }
 
-.tab {
-  font-size: 20px;
-  text-decoration: none;
-  background-color: lightgrey;
-}
-
-.active-meal-section {
-  display: inline-table;
-}
-
-.meal-table {
-  width: 100%;
+.meal-table:not(.active) {
   display: none;
-  padding: 6px 12px;
-  border: 1px solid #ccc;
 }
 
-.add-meal-button, #new-food-button{
-  width: 30%;
-  font-size: 14px;
-  margin: 5px;
-}
-
-.totals{
-  margin-top: 40px;
-  width: 100%;
-  padding: 6px 12px;
-  border: 1px solid #ccc;
-}
-
-#breakfast{
-  display: inline-table;
-}
+//
+// .totals{
+//   margin-top: 40px;
+//   width: 100%;
+//   padding: 6px 12px;
+// }
