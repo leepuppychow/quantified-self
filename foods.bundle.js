@@ -50,11 +50,11 @@
 
 	var _foodsHandler2 = _interopRequireDefault(_foodsHandler);
 
-	var _attachHandler = __webpack_require__(9);
+	var _attachHandler = __webpack_require__(10);
 
 	var _attachHandler2 = _interopRequireDefault(_attachHandler);
 
-	__webpack_require__(10);
+	__webpack_require__(11);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -71,6 +71,8 @@
 	});
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
 	var _jquery = __webpack_require__(2);
 
@@ -94,8 +96,6 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -111,129 +111,111 @@
 	    var _this = _possibleConstructorReturn(this, (FoodsHandler.__proto__ || Object.getPrototypeOf(FoodsHandler)).call(this));
 
 	    _this.service = new _foodsService2.default();
-	    _this.foods = new Map();
-	    _this.$ = _this.grabElements();
 	    _this.editing = null;
-	    _lodash2.default.bindAll(_this, 'handleFilterKeyup', 'handleSubmitAddFood', 'handleClickDelete', 'handleClick', 'handleEditorKeydown', 'addFood', 'reorderFoods');
+	    _this.sortOptions = {
+	      0: function _(a, b) {
+	        return a.id - b.id;
+	      },
+	      1: function _(a, b) {
+	        return b.calories - a.calories;
+	      },
+	      2: function _(a, b) {
+	        return a.calories - b.calories;
+	      }
+	    };
+
+	    _lodash2.default.bindAll(_this, 'handleSubmitAddFood', 'handleClickFoodDelete', 'handleClick', 'handleEditorKeydown', 'addFood');
 	    return _this;
 	  }
 
 	  _createClass(FoodsHandler, [{
-	    key: 'nextSort',
-	    value: function nextSort() {
-	      var options = _foodModel2.default.sortOptions = {
-	        0: function _(a, b) {
-	          return a.id - b.id;
-	        },
-	        1: function _(a, b) {
-	          return b.calories - a.calories;
-	        },
-	        2: function _(a, b) {
-	          return a.calories - b.calories;
-	        }
-	      };
-	    }
-	  }, {
 	    key: 'populate',
-	    value: function populate() {
+	    value: function populate(onMealPage) {
 	      var _this2 = this;
 
+	      _foodModel2.default.onMealPage = onMealPage;
 	      this.service.index().then(function (foods) {
 	        return foods.forEach(_this2.addFood);
 	      });
 	    }
 	  }, {
-	    key: 'reorderFoods',
-	    value: function reorderFoods(option) {
-	      var sorted = [].concat(_toConsumableArray(this.foods.values())).sort(this.sortOptions[option]);
+	    key: 'addFood',
+	    value: function addFood(data) {
+	      var food = _foodModel2.default.insert(data);
+	      this.$.foods.prepend(food.render());
+	    }
+	  }, {
+	    key: 'changeSort',
+	    value: function changeSort(option) {
+	      var sorted = _foodModel2.default.all().sort(this.sortOptions[option]);
 	      var newContents = sorted.map(function (food) {
 	        return food.render();
 	      });
-	      this.$.data.html(newContents);
-	    }
-	  }, {
-	    key: 'addFood',
-	    value: function addFood(food) {
-	      var wrapped = new _foodModel2.default(food);
-	      this.foods.set(food.id, wrapped);
-	      this.$.data.prepend(wrapped.render());
+	      this.$.foods.html(newContents);
 	    }
 	  }, {
 	    key: 'listen',
 	    value: function listen() {
-	      var _$ = this.$,
-	          addFood = _$.addFood,
-	          data = _$.data,
-	          body = _$.body,
-	          inputs = _$.inputs;
-
-	      inputs.filter.keyup(this.handleFilterKeyup);
-	      addFood.submit(this.handleSubmitAddFood);
-	      data.on('click', '.delete', this.handleClickDelete);
-	      body.click(this.handleClick);
-	      body.on('keydown', '.editor', this.handleEditorKeydown);
-	      (0, _jquery2.default)('form.filter').submit(function (e) {
-	        return e.preventDefault();
-	      });
+	      _get(FoodsHandler.prototype.__proto__ || Object.getPrototypeOf(FoodsHandler.prototype), 'listen', this).call(this);
+	      this.$.addFoodForm.submit(this.handleSubmitAddFood);
+	      this.$.foods.on('click', '.delete', this.handleClickFoodDelete);
+	      this.$.body.click(this.handleClick);
+	      this.$.body.on('keydown', '.editor', this.handleEditorKeydown);
 	    }
 	  }, {
 	    key: 'handleSubmitAddFood',
 	    value: function handleSubmitAddFood(event) {
 	      event.preventDefault();
-	      this.submitFood({
-	        name: this.$.inputs.name.val(),
-	        calories: this.$.inputs.calories.val()
-	      });
-	    }
-	  }, {
-	    key: 'submitFood',
-	    value: function submitFood(_ref) {
-	      var _this3 = this;
-
-	      var name = _ref.name,
-	          calories = _ref.calories;
-
 	      var errorText = '';
+	      var name = this.$.inputs.name.val();
+	      var calories = this.$.inputs.calories.val();
 	      if (!name) errorText += '<p>Please enter a food name</p>';
 	      if (!calories) errorText += '<p>Please enter a calorie amount</p>';
 	      if (errorText) return this.$.errors.html(errorText);
-	      this.service.create({ name: name, calories: calories }).then(function (food) {
-	        _this3.addFood(food);
+	      this.submitFood({ name: name, calories: calories });
+	    }
+	  }, {
+	    key: 'submitFood',
+	    value: function submitFood(food) {
+	      var _this3 = this;
+
+	      this.service.create(food).then(function (created) {
+	        _this3.addFood(created);
 	        _this3.$.inputs.name.val('');
 	        _this3.$.inputs.calories.val('');
 	      });
 	    }
 	  }, {
-	    key: 'handleClickDelete',
-	    value: function handleClickDelete(event) {
+	    key: 'handleClickFoodDelete',
+	    value: function handleClickFoodDelete(event) {
 	      var _this4 = this;
 
 	      var $tr = (0, _jquery2.default)(event.currentTarget.closest('tr'));
-	      var foodID = $tr.data('id');
+	      var id = $tr.data('id');
 	      $tr.hide();
-	      this.service.destroy(foodID).then(function () {
-	        return _this4.removeFood(foodID, $tr);
+	      this.service.destroy(id).then(function () {
+	        return _this4.removeFood(id, $tr);
 	      }).catch(function () {
-	        return _this4.restoreData($tr);
+	        return _this4.restoreFood($tr);
 	      });
 	    }
 	  }, {
 	    key: 'removeFood',
-	    value: function removeFood(foodID, $tr) {
-	      this.foods.delete(foodID);
+	    value: function removeFood(id, $tr) {
 	      $tr.remove();
+	      _foodModel2.default.delete(id);
 	    }
 	  }, {
-	    key: 'restoreData',
-	    value: function restoreData($tr) {
+	    key: 'restoreFood',
+	    value: function restoreFood($tr) {
 	      $tr.show();
 	      var name = $tr.find('td.name').text();
 	      alert(name + ' is part of this balanced breakfast!\nIt can\'t be deleted.');
 	    }
 	  }, {
 	    key: 'handleClick',
-	    value: function handleClick(_ref2) {
-	      var target = _ref2.target;
+	    value: function handleClick(_ref) {
+	      var target = _ref.target;
 
 	      var $target = (0, _jquery2.default)(target);
 	      if (this.editing && !$target.hasClass('editor')) this.submitEdit();
@@ -252,8 +234,8 @@
 	    }
 	  }, {
 	    key: 'handleEditorKeydown',
-	    value: function handleEditorKeydown(_ref3) {
-	      var key = _ref3.key;
+	    value: function handleEditorKeydown(_ref2) {
+	      var key = _ref2.key;
 
 	      if (key === "Enter") this.submitEdit();
 	      if (key === "Escape") this.cancelEdit();
@@ -287,6 +269,17 @@
 	          return $td.text(oldValue);
 	        });
 	      }
+	    }
+	  }, {
+	    key: 'grabElements',
+	    value: function grabElements() {
+	      return _lodash2.default.merge(_get(FoodsHandler.prototype.__proto__ || Object.getPrototypeOf(FoodsHandler.prototype), 'grabElements', this).call(this), {
+	        addFoodForm: (0, _jquery2.default)('form.add-food'),
+	        inputs: {
+	          name: (0, _jquery2.default)('form input[name="name"]'),
+	          calories: (0, _jquery2.default)('form input[name="calories"]')
+	        }
+	      });
 	    }
 	  }]);
 
@@ -27808,13 +27801,24 @@
 	var Handler = function () {
 	  function Handler() {
 	    _classCallCheck(this, Handler);
+
+	    this.$ = this.grabElements();
+	    this.handleFilterKeyup = this.handleFilterKeyup.bind(this);
 	  }
 
 	  _createClass(Handler, [{
+	    key: 'listen',
+	    value: function listen() {
+	      this.$.filter.keyup(this.handleFilterKeyup);
+	      this.$.filter.closest('form').submit(function (e) {
+	        return e.preventDefault();
+	      });
+	    }
+	  }, {
 	    key: 'handleFilterKeyup',
-	    value: function handleFilterKeyup(_event) {
-	      var term = this.$.inputs.filter.val();
-	      (0, _jquery2.default)('td.name').each(function (_index, td) {
+	    value: function handleFilterKeyup() {
+	      var term = this.$.filter.val();
+	      (0, _jquery2.default)('.data[data-field="name"]').each(function (_index, td) {
 	        var isMatch = td.innerHTML.toLowerCase().startsWith(term.toLowerCase());
 	        (0, _jquery2.default)(td).closest('tr').toggle(isMatch);
 	      });
@@ -27824,19 +27828,9 @@
 	    value: function grabElements() {
 	      return {
 	        body: (0, _jquery2.default)(document.body),
-	        inputs: {
-	          name: (0, _jquery2.default)('form input[name="name"]'),
-	          calories: (0, _jquery2.default)('form input[name="calories"]'),
-	          filter: (0, _jquery2.default)('form input[name="filter"]')
-	        },
-	        addFood: (0, _jquery2.default)('form.add-food'),
-	        data: (0, _jquery2.default)('table.foods tbody'),
-	        errors: (0, _jquery2.default)('.errors'),
-	        tabs: (0, _jquery2.default)('.tab'),
-	        tables: (0, _jquery2.default)('.meal-table'),
-	        newFood: (0, _jquery2.default)('#new-food-button'),
-	        addMeal: (0, _jquery2.default)('.add-meal-button'),
-	        sortByCalories: (0, _jquery2.default)('#sort-by-calories')
+	        filter: (0, _jquery2.default)('input[name="filter"]'),
+	        foods: (0, _jquery2.default)('table.foods tbody'),
+	        errors: (0, _jquery2.default)('#errors')
 	      };
 	    }
 	  }]);
@@ -27951,7 +27945,7 @@
 	  _createClass(Service, [{
 	    key: 'baseUrl',
 	    value: function baseUrl() {
-	      return 'https://quantified-self-rails-api.herokuapp.com/api/v1/';
+	      return 'https://quantified-self-api-express.herokuapp.com/api/v1/';
 	    }
 	  }, {
 	    key: 'fetch',
@@ -27997,7 +27991,7 @@
 
 /***/ }),
 /* 8 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -28007,9 +28001,21 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+	var _ViewModel2 = __webpack_require__(9);
+
+	var _ViewModel3 = _interopRequireDefault(_ViewModel2);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var Food = function () {
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Food = function (_ViewModel) {
+	  _inherits(Food, _ViewModel);
+
 	  function Food(_ref) {
 	    var id = _ref.id,
 	        name = _ref.name,
@@ -28017,35 +28023,82 @@
 
 	    _classCallCheck(this, Food);
 
-	    this.id = id;
-	    this.name = name;
-	    this.calories = calories;
+	    var _this = _possibleConstructorReturn(this, (Food.__proto__ || Object.getPrototypeOf(Food)).call(this));
+
+	    _this.id = id;
+	    _this.name = name;
+	    _this.calories = calories;
+	    return _this;
 	  }
 
 	  _createClass(Food, [{
 	    key: 'renderCheckBox',
 	    value: function renderCheckBox() {
-	      !Food.onMealPage ? '' : '<td><input type="checkbox"></td>';
+	      return !Food.onMealPage ? '' : '<td><input type="checkbox"></td>';
 	    }
 	  }, {
 	    key: 'renderDeleteButton',
 	    value: function renderDeleteButton() {
-	      Food.onMealPage ? '' : '<td><button class="delete">x</button></td>';
+	      return Food.onMealPage ? '' : '\n      <td><button class="delete"><button class="delete">\n        <i class="material-icons">delete_forever</i>\n      </button></button></td>\n    ';
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      return '\n      <tr data-id="' + this.id + '">\n        ' + this.renderCheckBox() + '\n        <td class="data name" data-field="name">' + this.name + '</td>\n        <td class="data" data-field="calories">' + this.calories + '</td>\n        ' + this.renderDeleteButton() + '\n      </tr>\n    ';
+	      return '\n      <tr data-id="' + this.id + '">\n        <td class="data" data-field="name">' + this.name + '</td>\n        <td class="data" data-field="calories">' + this.calories + '</td>\n        ' + this.renderCheckBox() + '\n        ' + this.renderDeleteButton() + '\n      </tr>\n    ';
 	    }
 	  }]);
 
 	  return Food;
-	}();
+	}(_ViewModel3.default);
+
+	Food.initialize();
 
 	exports.default = Food;
 
 /***/ }),
 /* 9 */
+/***/ (function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var ViewModel = function ViewModel() {
+	  _classCallCheck(this, ViewModel);
+	};
+
+	ViewModel.initialize = function () {
+	  this.data = new Map();
+	};
+
+	ViewModel.insert = function (raw) {
+	  var wrapped = new this(raw);
+	  this.data.set(raw.id, wrapped);
+	  return wrapped;
+	};
+
+	ViewModel.find = function (id) {
+	  return this.data.get(id);
+	};
+
+	ViewModel.delete = function (id) {
+	  this.data.delete(id);
+	};
+
+	ViewModel.all = function () {
+	  return [].concat(_toConsumableArray(this.data.values()));
+	};
+
+	exports.default = ViewModel;
+
+/***/ }),
+/* 10 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -28061,16 +28114,16 @@
 	};
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(11);
+	var content = __webpack_require__(12);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(14)(content, {});
+	var update = __webpack_require__(15)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -28087,22 +28140,23 @@
 	}
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(12)();
+	exports = module.exports = __webpack_require__(13)();
 	// imports
-	exports.i(__webpack_require__(13), "");
-	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Roboto);", ""]);
+	exports.i(__webpack_require__(14), "");
+	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Roboto|Monofett);", ""]);
+	exports.push([module.id, "@import url(https://fonts.googleapis.com/icon?family=Material+Icons);", ""]);
 
 	// module
-	exports.push([module.id, "body {\n  font-family: \"Roboto\", Helvetica, sans-serif;\n  background-color: #EFE; }\n\nheader {\n  position: fixed;\n  top: 0;\n  left: 0;\n  width: 90%;\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding: 2% 5%;\n  background-color: lightblue;\n  border-bottom: 3px solid black; }\n\nmain {\n  padding: 12% 0 0 5%; }\n\ntable {\n  border-collapse: collapse;\n  width: 60%; }\n  table tbody tr:nth-child(even) {\n    background-color: #EEF; }\n  table td {\n    padding: 3%; }\n    table td[data-field=\"calories\"] {\n      text-align: right; }\n\na {\n  text-decoration: none;\n  color: inherit;\n  border: 1px solid black;\n  background-color: lightgray;\n  padding: 10px;\n  border-radius: 10px; }\n\nh1 {\n  font-size: 3rem; }\n\nh2 {\n  font-size: 2rem; }\n\nh3 {\n  font-size: 22px; }\n\ninput {\n  margin: 20px 0px;\n  font-size: 20px; }\n\nth {\n  text-align: left; }\n\n.delete {\n  background-color: #d01;\n  color: white;\n  border-radius: 100%;\n  font-size: 1.3rem;\n  padding: 0 5px 2px 5px;\n  border: 1px solid white; }\n\n.errors {\n  color: red;\n  line-height: 1.5em;\n  font-style: italic; }\n\n.flex-row-container {\n  display: flex;\n  flex-direction: row;\n  justify-content: space-around; }\n\n.flex-column-container {\n  display: flex;\n  flex-direction: column;\n  width: 80%;\n  margin-right: 10%; }\n\n.add-food {\n  position: fixed;\n  right: 10%;\n  top: 40%;\n  display: flex;\n  flex-direction: column;\n  border: 1px solid black;\n  background-color: #EEF; }\n  .add-food > * {\n    margin: 5px 20px; }\n\n.filter {\n  background-color: none; }\n\n.check-box {\n  display: none; }\n", ""]);
+	exports.push([module.id, "h1 {\n  font-family: \"Monofett\", monospace;\n  font-size: 4rem;\n  letter-spacing: -0.12em;\n  line-height: 6rem;\n  white-space: nowrap; }\n\nh2 {\n  font-size: 2rem; }\n\nh3 {\n  font-size: 1.25rem; }\n\n.errors {\n  color: red;\n  line-height: 1.5em;\n  font-style: italic; }\n\nb {\n  font-weight: bold; }\n\nbody {\n  text-align: center;\n  font-family: \"Roboto\", Helvetica, sans-serif;\n  background-color: coral; }\n  body > header {\n    position: fixed;\n    top: 0;\n    left: 0;\n    width: 100%;\n    display: flex;\n    justify-content: space-around;\n    align-items: center;\n    background-color: lightblue;\n    border: 5px ridge silver; }\n  body > main {\n    padding-top: 6rem;\n    display: flex;\n    justify-content: space-around; }\n  body .side {\n    margin: 3%; }\n    body .side > * {\n      width: 100%; }\n    body .side.left {\n      flex: 60%; }\n    body .side.right {\n      flex: 40%;\n      margin-left: 0; }\n  body h2, body th {\n    font-size: 2rem;\n    padding: 20px 0;\n    background-color: silver; }\n\nbutton, a, input {\n  display: inline-block;\n  border: 4px outset silver;\n  border-radius: 15px; }\n  button:focus, a:focus, input:focus {\n    outline: none;\n    border: 4px outset yellow; }\n  button[type=\"checkbox\"], a[type=\"checkbox\"], input[type=\"checkbox\"] {\n    border: none;\n    border-radius: 0; }\n    button[type=\"checkbox\"]:focus, a[type=\"checkbox\"]:focus, input[type=\"checkbox\"]:focus {\n      outline: 4px ridge yellow; }\n  button[type=\"text\"], a[type=\"text\"], input[type=\"text\"] {\n    padding: 20px;\n    font-size: 20px;\n    margin: 20px 0; }\n\nbutton, a {\n  width: 25%;\n  padding: 10px 0;\n  background-color: #eeeeee;\n  color: black;\n  text-decoration: none;\n  font-size: 1rem;\n  cursor: pointer; }\n  button:hover, a:hover {\n    background-color: silver; }\n  button.delete, a.delete {\n    background-color: transparent;\n    border: none;\n    color: red;\n    padding: 0; }\n\nbody table {\n  width: 100%;\n  border-collapse: collapse;\n  border: 1px solid black;\n  background-color: #eeeeff; }\n  body table thead {\n    background-color: lemonchiffon; }\n  body table tr {\n    display: flex;\n    align-items: center; }\n    body table tr th {\n      flex: 1; }\n    body table tr td {\n      flex: 1;\n      padding: 1em 0; }\n  body table tbody tr:nth-child(even) {\n    background-color: #eeeeff; }\n  body table tbody tr:nth-child(odd) {\n    background-color: lemonchiffon; }\n\ntr {\n  text-align: left; }\n  tr *:last-child {\n    flex: 0.4;\n    order: -1; }\n\nform {\n  border: 1px solid black;\n  background-color: #eeeeff;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: space-between; }\n  form > * {\n    margin: 0% !important;\n    width: 80%; }\n\n.filter {\n  background-color: none; }\n\n.check-box {\n  display: none; }\n", ""]);
 
 	// exports
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports) {
 
 	/*
@@ -28158,10 +28212,10 @@
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(12)();
+	exports = module.exports = __webpack_require__(13)();
 	// imports
 
 
@@ -28172,7 +28226,7 @@
 
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/*
