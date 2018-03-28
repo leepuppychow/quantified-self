@@ -28705,7 +28705,6 @@
 	    _this.id = id;
 	    _this.name = name;
 	    _this.foods = foods;
-	    _this.calculateCalories();
 	    return _this;
 	  }
 
@@ -28733,6 +28732,7 @@
 	  }, {
 	    key: 'renderTableBody',
 	    value: function renderTableBody() {
+	      this.calculateCalories();
 	      var _calories = this.calories,
 	          remaining = _calories.remaining,
 	          consumed = _calories.consumed;
@@ -28771,13 +28771,14 @@
 	};
 
 	Meal.calculateCalorieTotals = function () {
-	  var meals = this.all();
-	  var first = meals.shift();
-	  return meals.reduce(function (totals, meal) {
-	    return _lodash2.default.mergeWith(totals, meal.calories, function (sum, addition) {
-	      return sum + addition;
-	    });
-	  }, first.calories);
+	  return this.all().reduce(function (totals, meal) {
+	    console.log({ totals: totals, meal: meal });
+	    for (var type in meal.calories) {
+	      totals[type] = (totals[type] || 0) + meal.calories[type];
+	    }
+	    return totals;
+	    // totals, meal.calories, (sum, addition) => sum + addition)
+	  }, {});
 	};
 
 	exports.default = Meal;
