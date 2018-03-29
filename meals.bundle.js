@@ -28497,7 +28497,7 @@
 
 	    _this.service = new _mealsService2.default();
 	    _this.foodsHandler = new _foodsHandler2.default();
-	    _lodash2.default.bindAll(_this, 'handleClickTab', 'handleClickAddMealFood', 'changeSort');
+	    _lodash2.default.bindAll(_this, 'handleClickTab', 'handleClickAddMealFood', 'handleClickDeleteMealFood', 'changeSort');
 	    _this.clickCount = 0;
 	    return _this;
 	  }
@@ -28541,8 +28541,9 @@
 	    value: function listen() {
 	      _get(MealsHandler.prototype.__proto__ || Object.getPrototypeOf(MealsHandler.prototype), 'listen', this).call(this);
 	      this.$.tabs.click(this.handleClickTab);
-	      this.$.addMealFood.click(this.handleClickAddMealFood);
+	      this.$.addMealFood.on('click', 'button', this.handleClickAddMealFood);
 	      this.$.changeSort.click(this.changeSort);
+	      this.$.tables.on('click', '.delete', this.handleClickDeleteMealFood);
 	    }
 	  }, {
 	    key: 'changeSort',
@@ -28562,10 +28563,39 @@
 	        return _this4.service.addFood(mealId, foodId).then(_mealModel2.default.find(mealId).foods.push(_foodModel2.default.find(foodId)));
 	      });
 	      Promise.all(completed);
-	      (0, _jquery2.default)('table[data-id="' + mealId + '"]').html(_mealModel2.default.find(mealId).renderTable());
+	      this.updateTable(mealId);
+	      // $(`table[data-id="${mealId}"]`).html(Meal.find(mealId).renderTable())
 	      this.displayCalorieTotals();
 	      this.changeTab(mealId);
 	      this.removeChecksFromBoxes(checkedFoods);
+	    }
+	  }, {
+	    key: 'handleClickDeleteMealFood',
+	    value: function handleClickDeleteMealFood(event) {
+	      var _this5 = this;
+
+	      var $tr = (0, _jquery2.default)(event.currentTarget.closest('tr'));
+	      var foodId = $tr.data('id');
+	      var mealId = $tr.closest('table').data('id');
+	      $tr.hide();
+	      this.service.removeFood(mealId, foodId).then(function () {
+	        return _this5.removeMealFood(mealId, foodId, $tr);
+	      }).catch($tr.show());
+	    }
+	  }, {
+	    key: 'removeMealFood',
+	    value: function removeMealFood(mealId, foodId, $tr) {
+	      $tr.remove();
+	      _lodash2.default.remove(_mealModel2.default.find(mealId).foods, function (food) {
+	        return food.id == foodId;
+	      });
+	      this.updateTable(mealId);
+	      this.displayCalorieTotals();
+	    }
+	  }, {
+	    key: 'updateTable',
+	    value: function updateTable(mealId) {
+	      (0, _jquery2.default)('table[data-id="' + mealId + '"]').html(_mealModel2.default.find(mealId).renderTable());
 	    }
 	  }, {
 	    key: 'removeChecksFromBoxes',
@@ -28674,10 +28704,6 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _lodash = __webpack_require__(3);
-
-	var _lodash2 = _interopRequireDefault(_lodash);
-
 	var _ViewModel2 = __webpack_require__(9);
 
 	var _ViewModel3 = _interopRequireDefault(_ViewModel2);
@@ -28712,7 +28738,6 @@
 	    key: 'calculateCalories',
 	    value: function calculateCalories() {
 	      var goal = Meal.goals[this.name];
-	      // const consumed = _.sumBy(this.foods, 'calories')
 	      var consumed = this.foods.reduce(function (sum, food) {
 	        return sum + food.calories;
 	      }, 0);
@@ -28727,7 +28752,7 @@
 	  }, {
 	    key: 'renderTable',
 	    value: function renderTable() {
-	      return '\n      <table class="meal-table" data-id="' + this.id + '">\n        <thead>\n          <tr>\n            <th>Name</th>\n            <th>Calories</th>\n          </tr>\n        </thead>\n        <tbody>\n          ' + this.renderTableBody() + '\n        </tbody>\n      </table>\n    ';
+	      return '\n      <table class="meal-table" data-id="' + this.id + '">\n        <thead>\n          <tr>\n            <th>Name</th>\n            <th>Calories</th>\n            <th>&nbsp;</th>\n          </tr>\n        </thead>\n        <tbody>\n          ' + this.renderTableBody() + '\n        </tbody>\n      </table>\n    ';
 	    }
 	  }, {
 	    key: 'renderTableBody',
@@ -28737,15 +28762,16 @@
 	          remaining = _calories.remaining,
 	          consumed = _calories.consumed;
 
-	      return '\n      <tbody>\n        ' + this.foods.map(this.renderMealFood).join('') + '\n        <tr>\n          <td>Total Calories</td>\n          <td class="total-calories">' + consumed + '</td>\n        </tr>\n        <tr>\n          <td>Remaining Calories</td>\n          <td class="' + Meal.sign(remaining) + '">' + remaining + '</td>\n        </tr>\n      </tbody>\n    ';
+	      return '\n      <tbody>\n        ' + this.foods.map(this.renderMealFood).join('') + '\n        <tr>\n          <td>Total Calories</td>\n          <td class="total-calories">' + consumed + '</td>\n          <td>&nbsp;</td>\n        </tr>\n        <tr>\n          <td>Remaining Calories</td>\n          <td class="' + Meal.sign(remaining) + '">' + remaining + '</td>\n          <td>&nbsp;</td>\n        </tr>\n      </tbody>\n    ';
 	    }
 	  }, {
 	    key: 'renderMealFood',
 	    value: function renderMealFood(_ref2) {
 	      var name = _ref2.name,
-	          calories = _ref2.calories;
+	          calories = _ref2.calories,
+	          id = _ref2.id;
 
-	      return '\n      <tr>\n        <td>' + name + '</td>\n        <td>' + calories + '</td>\n      </tr>\n    ';
+	      return '\n      <tr data-id="' + id + '">\n        <td>' + name + '</td>\n        <td>' + calories + '</td>\n        <td><button class="delete"><button class="delete">\n          <i class="material-icons">delete_forever</i>\n        </button></button></td>\n      </tr>\n    ';
 	    }
 	  }, {
 	    key: 'renderAddToMealButton',
@@ -28772,12 +28798,10 @@
 
 	Meal.calculateCalorieTotals = function () {
 	  return this.all().reduce(function (totals, meal) {
-	    console.log({ totals: totals, meal: meal });
 	    for (var type in meal.calories) {
 	      totals[type] = (totals[type] || 0) + meal.calories[type];
 	    }
 	    return totals;
-	    // totals, meal.calories, (sum, addition) => sum + addition)
 	  }, {});
 	};
 
