@@ -9,7 +9,7 @@ $alt2: lemonchiffon;
 $muted: #eeeeee;
 $alt-muted: silver;
 $focus: yellow;
-$warning: red;
+$warning: #d50000;
 
 $header-height: 6rem;
 
@@ -121,7 +121,6 @@ button, a {
     background-color: transparent;
     border: none;
     color: $warning;
-    padding: 0;
   }
 }
 
