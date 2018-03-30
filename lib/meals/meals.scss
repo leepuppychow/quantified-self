@@ -5,7 +5,7 @@
 //   background-color: lightgrey;
 // }
 
-.negative { color: red }
+.negative { color: $warning }
 .positive { color: green }
 .tab {
   @include subheader;

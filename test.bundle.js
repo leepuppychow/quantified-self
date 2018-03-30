@@ -28034,12 +28034,12 @@
 	  _createClass(Food, [{
 	    key: 'renderCheckBox',
 	    value: function renderCheckBox() {
-	      return !Food.onMealPage ? '' : '<td><input type="checkbox"></td>';
+	      return !Food.onMealPage ? '' : '<td><input type="checkbox" aria-label="add to meal"></td>';
 	    }
 	  }, {
 	    key: 'renderDeleteButton',
 	    value: function renderDeleteButton() {
-	      return Food.onMealPage ? '' : '\n      <td><button class="delete"><button class="delete">\n        <i class="material-icons">delete_forever</i>\n      </button></button></td>\n    ';
+	      return Food.onMealPage ? '' : '\n      <td><button class="delete" aria-label="delete">\n        <i class="material-icons">delete_forever</i>\n      </button></td>\n    ';
 	    }
 	  }, {
 	    key: 'render',
