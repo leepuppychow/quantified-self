@@ -219,18 +219,18 @@
 
 	      var $target = (0, _jquery2.default)(target);
 	      if (this.editing && !$target.hasClass('editor')) this.submitEdit();
-	      if ($target.hasClass('data')) this.startEdit($target);
+	      if ($target.data('field')) this.startEdit($target);
 	    }
 	  }, {
 	    key: 'startEdit',
-	    value: function startEdit($td) {
-	      var field = $td.data('field');
+	    value: function startEdit($p) {
+	      var field = $p.data('field');
 	      var $input = this.$.inputs[field].clone();
-	      $input.val($td.text());
+	      $input.val($p.text());
 	      $input.addClass('editor');
-	      $td.replaceWith($input);
+	      $p.replaceWith($input);
 	      $input.focus();
-	      this.editing = { $td: $td, $input: $input, field: field };
+	      this.editing = { $p: $p, $input: $input, field: field };
 	    }
 	  }, {
 	    key: 'handleEditorKeydown',
@@ -244,29 +244,29 @@
 	    key: 'cancelEdit',
 	    value: function cancelEdit() {
 	      var _editing = this.editing,
-	          $td = _editing.$td,
+	          $p = _editing.$p,
 	          $input = _editing.$input;
 
 	      this.editing = null;
-	      $input.replaceWith($td);
+	      $input.replaceWith($p);
 	    }
 	  }, {
 	    key: 'submitEdit',
 	    value: function submitEdit() {
 	      var _editing2 = this.editing,
-	          $td = _editing2.$td,
+	          $p = _editing2.$p,
 	          $input = _editing2.$input,
 	          field = _editing2.field;
 
 	      this.editing = null;
 	      var newValue = $input.val();
-	      var oldValue = $td.text();
-	      $td.text(newValue);
-	      $input.replaceWith($td);
+	      var oldValue = $p.text();
+	      $p.text(newValue);
+	      $input.replaceWith($p);
 	      if (newValue !== oldValue) {
-	        var id = $td.closest('tr').data('id');
+	        var id = $p.closest('tr').data('id');
 	        this.service.update(id, field, newValue).catch(function () {
-	          return $td.text(oldValue);
+	          return $p.text(oldValue);
 	        });
 	      }
 	    }
@@ -27818,9 +27818,9 @@
 	    key: 'handleFilterKeyup',
 	    value: function handleFilterKeyup() {
 	      var term = this.$.filter.val();
-	      (0, _jquery2.default)('.data[data-field="name"]').each(function (_index, td) {
-	        var isMatch = td.innerHTML.toLowerCase().startsWith(term.toLowerCase());
-	        (0, _jquery2.default)(td).closest('tr').toggle(isMatch);
+	      (0, _jquery2.default)('p[data-field="name"]').each(function (_index, p) {
+	        var isMatch = p.innerHTML.toLowerCase().startsWith(term.toLowerCase());
+	        (0, _jquery2.default)(p).closest('tr').toggle(isMatch);
 	      });
 	    }
 	  }, {
@@ -28044,7 +28044,7 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      return '\n      <tr data-id="' + this.id + '">\n        <td class="data" data-field="name">' + this.name + '</td>\n        <td class="data" data-field="calories">' + this.calories + '</td>\n        ' + this.renderCheckBox() + '\n        ' + this.renderDeleteButton() + '\n      </tr>\n    ';
+	      return '\n      <tr data-id="' + this.id + '">\n        ' + this.renderCheckBox() + '\n        ' + this.renderDeleteButton() + '\n        <td><p data-field="name">' + this.name + '</p></td>\n        <td><p data-field="calories">' + this.calories + '</p></td>\n      </tr>\n    ';
 	    }
 	  }]);
 

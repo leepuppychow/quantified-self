@@ -17,19 +17,23 @@
     <div class="left side">
       <div id="tabs"></div>
       <div id="tables">
+      <br />
       <table id="totals">
-        <thead><h2>Totals</h2></thead>
+        <thead><th>&nbsp;</th><th>Total Calories</th><th>&nbsp;</th></thead>
         <tbody>
           <tr>
-            <td>Goal Calories</td>
+            <td>&nbsp;</td>
+            <td>Goal</td>
             <td class="goal"></td>
           </tr>
           <tr>
-            <td>Calories Consumed</td>
+            <td>&nbsp;</td>
+            <td>Used</td>
             <td class="consumed"></td>
           </tr>
           <tr>
-            <td>Remaining Calories</td>
+            <td>&nbsp;</td>
+            <td>Remaining</td>
             <td class="remaining"></td>
           </tr>
         </tbody>
@@ -38,22 +42,19 @@
     </div>
     <div class="right side">
       <h2>Foods</h2>
-      <br>
-      <a href="foods.html"><b>Create New Food</b></a>
-      <h3>Add Food To:</h3>
-      <div id="add-meal-food"></div>
-      <br>
-      <br>
-      <form>
-        <label for="filter">Search by Name</label>
-        <input id="filter" name="filter" type="text">
-      </form>
+      <section>
+        <label for="filter">Search by Name
+          <input id="filter" name="filter" type="text" placeholder="filter">
+        </label>
+        <a href="foods.html"><b>Create New Food</b></a>
+        <div id="add-meal-food"><p><b>Add Selected Foods To:</b></p></div>
+      </section>
       <table class="foods">
         <thead>
           <tr>
+            <th id="change-sort"><i class="fa fa-sort"></i></th>
             <th>Name</th>
             <th>Calories</th>
-            <th id="change-sort"><i class="fa fa-sort"></i></th>
           </tr>
         </thead>
         <tbody />

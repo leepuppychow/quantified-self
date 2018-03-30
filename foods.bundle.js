@@ -219,18 +219,18 @@
 
 	      var $target = (0, _jquery2.default)(target);
 	      if (this.editing && !$target.hasClass('editor')) this.submitEdit();
-	      if ($target.hasClass('data')) this.startEdit($target);
+	      if ($target.data('field')) this.startEdit($target);
 	    }
 	  }, {
 	    key: 'startEdit',
-	    value: function startEdit($td) {
-	      var field = $td.data('field');
+	    value: function startEdit($p) {
+	      var field = $p.data('field');
 	      var $input = this.$.inputs[field].clone();
-	      $input.val($td.text());
+	      $input.val($p.text());
 	      $input.addClass('editor');
-	      $td.replaceWith($input);
+	      $p.replaceWith($input);
 	      $input.focus();
-	      this.editing = { $td: $td, $input: $input, field: field };
+	      this.editing = { $p: $p, $input: $input, field: field };
 	    }
 	  }, {
 	    key: 'handleEditorKeydown',
@@ -244,29 +244,29 @@
 	    key: 'cancelEdit',
 	    value: function cancelEdit() {
 	      var _editing = this.editing,
-	          $td = _editing.$td,
+	          $p = _editing.$p,
 	          $input = _editing.$input;
 
 	      this.editing = null;
-	      $input.replaceWith($td);
+	      $input.replaceWith($p);
 	    }
 	  }, {
 	    key: 'submitEdit',
 	    value: function submitEdit() {
 	      var _editing2 = this.editing,
-	          $td = _editing2.$td,
+	          $p = _editing2.$p,
 	          $input = _editing2.$input,
 	          field = _editing2.field;
 
 	      this.editing = null;
 	      var newValue = $input.val();
-	      var oldValue = $td.text();
-	      $td.text(newValue);
-	      $input.replaceWith($td);
+	      var oldValue = $p.text();
+	      $p.text(newValue);
+	      $input.replaceWith($p);
 	      if (newValue !== oldValue) {
-	        var id = $td.closest('tr').data('id');
+	        var id = $p.closest('tr').data('id');
 	        this.service.update(id, field, newValue).catch(function () {
-	          return $td.text(oldValue);
+	          return $p.text(oldValue);
 	        });
 	      }
 	    }
@@ -27818,9 +27818,9 @@
 	    key: 'handleFilterKeyup',
 	    value: function handleFilterKeyup() {
 	      var term = this.$.filter.val();
-	      (0, _jquery2.default)('.data[data-field="name"]').each(function (_index, td) {
-	        var isMatch = td.innerHTML.toLowerCase().startsWith(term.toLowerCase());
-	        (0, _jquery2.default)(td).closest('tr').toggle(isMatch);
+	      (0, _jquery2.default)('p[data-field="name"]').each(function (_index, p) {
+	        var isMatch = p.innerHTML.toLowerCase().startsWith(term.toLowerCase());
+	        (0, _jquery2.default)(p).closest('tr').toggle(isMatch);
 	      });
 	    }
 	  }, {
@@ -28044,7 +28044,7 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      return '\n      <tr data-id="' + this.id + '">\n        <td class="data" data-field="name">' + this.name + '</td>\n        <td class="data" data-field="calories">' + this.calories + '</td>\n        ' + this.renderCheckBox() + '\n        ' + this.renderDeleteButton() + '\n      </tr>\n    ';
+	      return '\n      <tr data-id="' + this.id + '">\n        ' + this.renderCheckBox() + '\n        ' + this.renderDeleteButton() + '\n        <td><p data-field="name">' + this.name + '</p></td>\n        <td><p data-field="calories">' + this.calories + '</p></td>\n      </tr>\n    ';
 	    }
 	  }]);
 
@@ -28150,7 +28150,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/icon?family=Material+Icons);", ""]);
 
 	// module
-	exports.push([module.id, "h1 {\n  font-family: \"Monofett\", monospace;\n  font-size: 4rem;\n  letter-spacing: -0.12em;\n  line-height: 6rem;\n  white-space: nowrap; }\n\nh2 {\n  font-size: 2rem; }\n\nh3 {\n  font-size: 1.25rem; }\n\n.errors {\n  color: #d50000;\n  line-height: 1.5em;\n  font-style: italic; }\n\nb {\n  font-weight: bold; }\n\nbody {\n  text-align: center;\n  font-family: \"Roboto\", Helvetica, sans-serif;\n  background-color: coral; }\n  body > header {\n    position: fixed;\n    top: 0;\n    left: 0;\n    width: 100%;\n    display: flex;\n    justify-content: space-around;\n    align-items: center;\n    background-color: lightblue;\n    border: 5px ridge silver; }\n  body > main {\n    padding-top: 6rem;\n    display: flex;\n    justify-content: space-around; }\n  body .side {\n    margin: 3%; }\n    body .side > * {\n      width: 100%; }\n    body .side.left {\n      flex: 60%; }\n    body .side.right {\n      flex: 40%;\n      margin-left: 0; }\n  body h2, body th {\n    font-size: 2rem;\n    padding: 20px 0;\n    background-color: silver; }\n\nbutton, a, input {\n  display: inline-block;\n  border: 4px outset silver;\n  border-radius: 15px; }\n  button:focus, a:focus, input:focus {\n    outline: none;\n    border: 4px outset yellow; }\n  button[type=\"checkbox\"], a[type=\"checkbox\"], input[type=\"checkbox\"] {\n    border: none;\n    border-radius: 0; }\n    button[type=\"checkbox\"]:focus, a[type=\"checkbox\"]:focus, input[type=\"checkbox\"]:focus {\n      outline: 4px ridge yellow; }\n  button[type=\"text\"], a[type=\"text\"], input[type=\"text\"] {\n    padding: 20px;\n    font-size: 20px;\n    margin: 20px 0; }\n\nbutton, a {\n  width: 25%;\n  padding: 10px 0;\n  background-color: #eeeeee;\n  color: black;\n  text-decoration: none;\n  font-size: 1rem;\n  cursor: pointer; }\n  button:hover, a:hover {\n    background-color: silver; }\n  button.delete, a.delete {\n    background-color: transparent;\n    border: none;\n    color: #d50000; }\n\nbody table {\n  width: 100%;\n  border-collapse: collapse;\n  border: 1px solid black;\n  background-color: #eeeeff; }\n  body table thead {\n    background-color: lemonchiffon; }\n  body table tr {\n    display: flex;\n    align-items: center; }\n    body table tr th {\n      flex: 1; }\n    body table tr td {\n      flex: 1;\n      padding: 1em 0; }\n  body table tbody tr:nth-child(even) {\n    background-color: #eeeeff; }\n  body table tbody tr:nth-child(odd) {\n    background-color: lemonchiffon; }\n\ntr {\n  text-align: left; }\n  tr *:last-child {\n    flex: 0.4;\n    order: -1; }\n\nform {\n  border: 1px solid black;\n  background-color: #eeeeff;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: space-between; }\n  form > * {\n    margin: 0% !important;\n    width: 80%; }\n\n.filter {\n  background-color: none; }\n\n.check-box {\n  display: none; }\n", ""]);
+	exports.push([module.id, "@charset \"UTF-8\";\nh1 {\n  font-family: \"Monofett\", monospace;\n  font-size: 4rem;\n  letter-spacing: -0.12em;\n  line-height: 6rem;\n  white-space: nowrap; }\n  @media only screen and (max-width: 950px) {\n    h1 {\n      font-size: 2.5em; } }\n  @media only screen and (max-width: 600px) {\n    h1 {\n      font-size: 1.5em;\n      order: -1; } }\n\n#errors {\n  color: #d50000;\n  line-height: 1.5em;\n  font-style: italic; }\n\nh2 {\n  border: 1px solid black; }\n\nb {\n  font-weight: bold; }\n\nbody {\n  text-align: center;\n  font-family: \"Roboto\", Helvetica, sans-serif;\n  background-color: coral; }\n  body > header {\n    position: fixed;\n    top: 0;\n    left: 0;\n    width: 100%;\n    display: flex;\n    justify-content: space-around;\n    align-items: center;\n    background-color: lightblue;\n    border-bottom: 5px ridge silver; }\n  body > main {\n    padding-top: 6rem;\n    display: flex;\n    justify-content: space-around; }\n  body .side {\n    margin: 3%; }\n    body .side > * {\n      width: 100%; }\n    body .side.left {\n      flex: 60%; }\n    body .side.right {\n      flex: 40%;\n      margin-left: 0; }\n  body h2, body th {\n    font-size: 2rem;\n    padding: 20px 0;\n    white-space: nowrap;\n    background-color: silver; }\n    @media only screen and (max-width: 950px) {\n      body h2, body th {\n        padding: 15px 0;\n        font-size: 1.5em; } }\n\nbutton, a, input {\n  display: inline-block;\n  border: 4px outset silver;\n  border-radius: 15px; }\n  button:focus, a:focus, input:focus {\n    outline: none;\n    border: 4px outset yellow; }\n  button[type=\"checkbox\"], a[type=\"checkbox\"], input[type=\"checkbox\"] {\n    border: none;\n    border-radius: 0; }\n    button[type=\"checkbox\"]:focus, a[type=\"checkbox\"]:focus, input[type=\"checkbox\"]:focus {\n      outline: 4px ridge yellow; }\n  button[type=\"text\"], a[type=\"text\"], input[type=\"text\"] {\n    padding: 20px;\n    font-size: 20px; }\n\nbutton, a {\n  width: 25%;\n  padding: 10px 0;\n  background-color: #eeeeee;\n  color: black;\n  text-decoration: none;\n  font-size: 1rem;\n  cursor: pointer; }\n  button:hover, a:hover {\n    background-color: silver; }\n  button.delete, a.delete {\n    background-color: transparent;\n    border: none;\n    color: #d50000; }\n\nbody table {\n  width: 100%;\n  border-collapse: collapse;\n  border: 1px solid black;\n  background-color: #eeeeff; }\n  body table thead {\n    background-color: lemonchiffon; }\n  body table tr {\n    text-align: left;\n    display: flex;\n    align-items: center; }\n    body table tr * {\n      flex: 1; }\n    body table tr td {\n      padding: 1em 0; }\n      body table tr td p {\n        float: left; }\n      body table tr td .editor {\n        padding: 0; }\n    body table tr :first-child {\n      text-align: center;\n      flex: 0.4; }\n  body table tbody tr:nth-child(even) {\n    background-color: #eeeeff; }\n  body table tbody tr:nth-child(odd) {\n    background-color: lemonchiffon; }\n\nform, section {\n  border: 1px solid black;\n  background-color: #eeeeff;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: space-between;\n  margin-bottom: 7%; }\n  form > *, section > * {\n    width: 80%;\n    margin: 2%; }\n\n.emoji::before {\n  content: \"\\1F60A\"; }\n\n.emoji:hover::before {\n  content: \"\\1F92F\"; }\n\n@media only screen and (max-width: 600px) {\n  main {\n    flex-direction: column-reverse; } }\n", ""]);
 
 	// exports
 

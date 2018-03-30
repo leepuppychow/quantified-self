@@ -13,8 +13,10 @@ $warning: #d50000;
 
 $header-height: 6rem;
 
-@mixin small() {
-  @media only screen and (max-width: 320px) {
+$small: 600px;
+$medium: 950px;
+@mixin break-below($size) {
+  @media only screen and (max-width: $size) {
     @content;
   }
 }
@@ -22,12 +24,16 @@ $header-height: 6rem;
 @mixin subheader {
   font-size: 2rem;
   padding: 20px 0;
+  white-space: nowrap;
+  @include break-below($medium) {
+    padding: 15px 0;
+    font-size: 1.5em;
+  }
 }
 
 @mixin border($color: black) {
   border: 1px solid #{$color};
 }
-
 
 h1 {
   font-family: "Monofett", monospace;
@@ -35,14 +41,18 @@ h1 {
   letter-spacing: -0.12em;
   line-height: $header-height;
   white-space: nowrap;
+  @include break-below($medium) { font-size: 2.5em };
+  @include break-below($small) {
+    font-size: 1.5em;
+    order: -1;
+  };
 }
-h2 { font-size: 2rem }
-h3 { font-size: 1.25rem }
-.errors {
+#errors {
   color: $warning;
   line-height: 1.5em;
   font-style: italic;
 }
+h2 { @include border }
 b {
   font-weight: bold;
 }
@@ -61,7 +71,7 @@ body {
     justify-content: space-around;
     align-items: center;
     background-color: $trim;
-    border: 5px ridge $alt-muted;
+    border-bottom: 5px ridge $alt-muted;
   }
 
   > main {
@@ -104,7 +114,6 @@ button, a, input {
   &[type="text"] {
     padding: 20px;
     font-size: 20px;
-    margin: 20px 0;
   }
 }
 button, a {
@@ -134,17 +143,47 @@ body {
       background-color: $alt2;
     }
     tr {
+      text-align: left;
       display: flex;
       align-items: center;
-      th { flex: 1 }
+      * { flex: 1 }
       td {
-        flex: 1;
         padding: 1em 0;
+        p { float: left }
+        .editor { padding: 0 }
+      }
+      :first-child {
+        text-align: center;
+        flex: 0.4;
       }
     }
     tbody tr {
       &:nth-child(even) { background-color: $alt1 }
       &:nth-child(odd) { background-color: $alt2 }
     }
+  }
+}
+
+form, section {
+  @include border;
+  background-color: $alt1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 7%;
+  >* {
+    width: 80%;
+    margin: 2%
+  }
+}
+
+.emoji {
+  &::before {
+    content: "😊";
+  }
+  &:hover::before {
+    content: "🤯";
+    // 💩🤬🤢🤤😋🤡🍪
   }
 }
