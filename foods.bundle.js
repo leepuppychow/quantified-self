@@ -258,8 +258,13 @@
 	          $input = _editing2.$input,
 	          field = _editing2.field;
 
-	      this.editing = null;
 	      var newValue = $input.val();
+	      if (!newValue) {
+	        this.cancelEdit();
+	        window.alert('value can\'t be empty');
+	        return;
+	      }
+	      this.editing = null;
 	      var oldValue = $p.text();
 	      $p.text(newValue);
 	      $input.replaceWith($p);
