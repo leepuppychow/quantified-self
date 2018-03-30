@@ -1,16 +1,20 @@
 @import "../shared/main";
 
-// caption, .foods thead {
-//   @include subheader;
-//   background-color: lightgrey;
-// }
+main {
+  @include break-below($small) { flex-direction: column };
+}
 
 .negative { color: $warning }
 .positive { color: green }
+#tabs {
+  display: flex;
+  @include break-below($medium) {
+    flex-wrap: wrap;
+  }
+}
 .tab {
   @include subheader;
   outline: none;
-  float: left;
   border-radius: 0;
   &.active {
     background-color: black;
@@ -22,10 +26,3 @@
 .meal-table:not(.active) {
   display: none;
 }
-
-//
-// .totals{
-//   margin-top: 40px;
-//   width: 100%;
-//   padding: 6px 12px;
-// }

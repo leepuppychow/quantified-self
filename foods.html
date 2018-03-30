@@ -6,8 +6,9 @@
 </head>
 <body>
   <header>
+    <!-- 😊 -->
     <a href=".">meals</a>
-    <h1>Quantified😊Self</h1>
+    <h1>Quantified<span class="emoji"></span>Self</h1>
     <a href="foods.html">foods</a>
   </header>
   <main>
@@ -15,25 +16,25 @@
       <table class="foods">
         <thead>
           <tr>
+            <th>&nbsp;</th>
             <th>Name</th>
             <th>Calories</th>
-            <th>&nbsp;</th>
           </tr>
         </thead>
         <tbody />
       </table>
     </div>
     <div class="right side">
-      <form>
-        <label for="filter">Search by Name</label>
-        <input id="filter" name="filter" type="text">
-      </form>
       <form class="add-food">
-        <button type="submit">Add New Food</button>
-        <input type="text" name="name" placeholder="name" aria-label="food name">
-        <hr>
-        <input type="text"  name="calories" placeholder="calories" aria-label="food calories" type="number" min="0">
-        <p class="errors" />
+        <b>Add Food</b>
+        <input type="text" name="name" aria-label="name" placeholder="name">
+        <input type="text"  name="calories" placeholder="calories" aria-label="calories" type="number" min="0">
+        <button type="submit">submit</button>
+        <p id="errors" />
+      </form>
+      <form>
+        <label for="filter"><b>Search</b></label>
+        <input id="filter" name="filter" type="text" placeholder="filter">
       </form>
     </div>
   </main>
