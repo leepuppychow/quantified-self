@@ -1,4 +1,5 @@
 # Quantified Self Webpack [![Build Status](https://travis-ci.org/leepuppychow/quantified-self.svg?branch=master)](https://travis-ci.org/leepuppychow/quantified-self)
+(the API repo is [here](https://github.com/JosiMcClellan/qs-express-api))
 
 ### Initial Setup
 ```
